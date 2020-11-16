@@ -7,6 +7,7 @@ def print_hi(name: str) -> None:
 
     Parameters
     ----------
-        name: The name to be greeted
+    name: str
+        The name to be greeted
     """
     print(f'Hi, {name}!')

@@ -1,5 +1,21 @@
 """
 Example simulation in Mesa from https://mesa.readthedocs.io/en/stable/tutorials/intro_tutorial.html
+
+The formatting of the documentation is based on the
+`numpydoc docstring guide https://numpydoc.readthedocs.io/en/latest/format.html`_. Relevant literature can be cited
+in the Notes section and referenced like [Comer2014]_ or [Dragulescu2002]_.
+
+Notes
+-----
+.. [Comer2014] Comer, Kenneth W.
+   "Who Goes First? An Examination of the Impact of Activation on Outcome Behavior in AgentBased Models."
+   George Mason University, 2014.
+   http://gradworks.umi.com/36/23/3623940.html.
+
+.. [Dragulescu2002] Drăgulescu, Adrian A., and Victor M. Yakovenko.
+   "Statistical Mechanics of Money, Income, and Wealth: A Short Survey."
+   arXiv Preprint Cond-mat/0211175, 2002.
+   http://arxiv.org/abs/cond-mat/0211175.
 """
 
 from mesa import Agent, Model
