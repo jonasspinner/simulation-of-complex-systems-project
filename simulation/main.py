@@ -5,7 +5,7 @@ It can be executed by running `python3 ./simulation/main.py`
 """
 
 from core import print_hi
-from core import run_mesa_example, plot_mesa_example
+from mesa_example import run_mesa_example, plot_mesa_example
 import matplotlib.pyplot as plt
 from pathlib import Path
 

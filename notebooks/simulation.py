@@ -8,7 +8,7 @@ import importlib
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../simulation'))
+sys.path.insert(0, os.path.abspath('../'))
 
 if not hasattr(importlib, 'reload'):
     importlib.reload = importlib.reload  # for Python 2 compatibility
