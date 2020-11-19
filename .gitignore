@@ -1,6 +1,9 @@
 # Results folder
 results/
 
+# visual studio code generated files
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
