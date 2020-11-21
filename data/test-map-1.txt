@@ -1,0 +1,36 @@
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+X                  CTC    CTC     CTC     CTC     CTC      X
+X                  CTC    CTC     CTC     CTC     CTC      X
+X                  CTC    CTC     CTC     CTC     CTC      X
+XCCCCCCCCCC        CTC    CTC     CTC     CTC     CTC      X
+XTTTTTTTTTT                                                X
+XCCCCCCCCCC                                                X
+X                                                          F
+X                                                          F
+X                                                          F
+XCCCCCCCCCC                                                F
+XTTTTTTTTTT          C                                     F
+XCCCCCCCCCC          T                                     X
+X                  CTTTC              C                    X
+X                    T                T                    X
+X                    C              CTTTC                  X
+XCCCCCCCCCC                           T                    X
+XTTTTTTTTTT                           C                    X
+XCCCCCCCCCC                                                X
+X                       C                                  X
+X                       T                                  X
+X                     CTTTC                                X
+X                       T                                  X
+XCCCCCCCCCC             C            C                     X
+XTTTTTTTTTT                          T                     X
+XCCCCCCCCCC                        CTTTC                   E
+X                                    T                     E
+X                                    C                     X
+X                                                          X
+X                                                          X
+XCCCCCCCCCC                                                X
+XTTTTTTTTTT       CTC    CTC    CTC    CTC    CTC   CTC    X
+XCCCCCCCCCC       CTC    CTC    CTC    CTC    CTC   CTC    X
+X                 CTC    CTC    CTC    CTC    CTC   CTC    X
+X                 CTC    CTC    CTC    CTC    CTC   CTC    X
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

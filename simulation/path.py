@@ -48,15 +48,17 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
             continue
         for v in neighbors(u):
             non_floor_movement = environment[u] != FLOOR or environment[v] != FLOOR
-            cost = 10 if non_floor_movement else 1
-            graph.add_edge(u, v, distance=cost)
+            cost = distance(u, v)
+            if non_floor_movement:
+                cost += 10.0
+            graph.add_edge(u, v, cost=cost)
     return graph
 
 
 def find_path(environment: nx.networkx, start: Pos, end: Pos) -> List[Pos]:
     graph = build_graph(environment)
     # noinspection PyTypeChecker
-    return nx.astar_path(graph, start, end, heuristic=distance, weight="distance")
+    return nx.astar_path(graph, start, end, heuristic=distance, weight="cost")
 
 
 def plot_path(environment: np.ndarray, path: Optional[List[Pos]] = None) -> None:
