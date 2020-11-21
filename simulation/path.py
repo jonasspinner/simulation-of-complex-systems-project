@@ -32,7 +32,7 @@ def distance(u: Pos, v: Pos) -> float:
 def build_graph(environment: np.ndarray) -> nx.DiGraph:
     height, width = environment.shape
     positions = list(product(range(height), range(width)))
-    print(positions[-1], height, width)
+
     graph = nx.DiGraph()
     graph.add_nodes_from(positions)
 
@@ -47,11 +47,9 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
         if environment[u] == WALL:
             continue
         for v in neighbors(u):
-            d = distance(u, v)
-            if d <= 1.5:
-                if environment[u] != FLOOR or environment[v] != FLOOR:
-                    d += 10
-                graph.add_edge(u, v, distance=d)
+            non_floor_movement = environment[u] != FLOOR or environment[v] != FLOOR
+            cost = 10 if non_floor_movement else 1
+            graph.add_edge(u, v, distance=cost)
     return graph
 
 
