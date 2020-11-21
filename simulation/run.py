@@ -1,5 +1,5 @@
 from path import find_path, plot_path
-from mapLayout import load_environment
+from loader import load_environment
 from agent import Agent
 import matplotlib.pyplot as plot 
 import numpy as np 
@@ -19,7 +19,7 @@ building_cmap = ListedColormap([
 ])
 
 res = 1
-environment, seatPositions, foodPosition, entryPosition = load_environment("map1", res)
+environment, entryPosition, foodPosition, seatPositions = load_environment("map1", res)
 
 agentPop = []
 #Create path to food place from entrence
