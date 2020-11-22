@@ -1,20 +1,12 @@
 from itertools import product
-from typing import Tuple, Optional, List, TypeVar
+from typing import Optional, List
 
 import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 
-Tile = int
-Pos = Tuple[int, int]
-T = TypeVar("T")
-
-WALL: Tile = 0
-FLOOR: Tile = 1
-SEAT: Tile = 2
-ENTRY: Tile = 3
-FOOD: Tile = 4
+from loader import TileType, Pos
 
 building_cmap = ListedColormap([
     [0.5, 0.5, 0.5, 1],  # wall
@@ -41,13 +33,13 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
         candidates = [(i + di, j + dj) for di, dj
                       in [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)]]
         return [(i, j) for i, j in candidates
-                if 0 <= i < height and 0 <= j < width and environment[i, j] != WALL]
+                if 0 <= i < height and 0 <= j < width and environment[i, j] != TileType.WALL]
 
     for u in positions:
-        if environment[u] == WALL:
+        if environment[u] == TileType.WALL:
             continue
         for v in neighbors(u):
-            non_floor_movement = environment[u] != FLOOR or environment[v] != FLOOR
+            non_floor_movement = environment[u] != TileType.FLOOR or environment[v] != TileType.FLOOR
             cost = distance(u, v)
             if non_floor_movement:
                 cost += 10.0
