@@ -49,7 +49,7 @@ def load_environment(file_name: str, resolution: int) -> Tuple[np.ndarray, List[
                              for i, row in enumerate(rows) if len(row) != width]
             raise RuntimeError(f"Every row should have the same size. {' '.join(line_messages)}.")
 
-        matrix = np.zeros((height * resolution, width * resolution))
+        matrix = np.zeros((height * resolution, width * resolution), dtype=int)
         positions: Mapping[TileType.Tile, List[Pos]] = {
             TileType.ENTRY: [], TileType.FOOD: [], TileType.SEAT: []
         }
