@@ -8,11 +8,11 @@ Pos = Tuple[int, int]
 
 @unique
 class TileType(IntEnum):
-    WALL = auto()
-    FLOOR = auto()
-    SEAT = auto()
-    ENTRY = auto()
-    FOOD = auto()
+    WALL = 0
+    FLOOR = 1
+    SEAT = 2
+    ENTRY = 3
+    FOOD = 4
 
 
 TILE_MAP: Mapping[str, TileType] = {
