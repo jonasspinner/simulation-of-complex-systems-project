@@ -1,52 +1,58 @@
+import numpy as np 
+
 class Agent:
 
     def __init__(self,
                 pathIn = [],
                 pathExit = [],
-                state = 0,
-                eatTime = 30,
+                state = "OUT",
+                eatTime = 300,
                 infected = False,
-                accDroplets = 0):
+                accDroplets = 0.0):
 
         self.state = state 
+        self.eatTime = eatTime
         self.infected = infected
-        self.pathIn = pathIn #to food + seat
-        self.pathExit = pathExit
+        self.pathIn = np.asarray(pathIn) #to food + seat
+        self.pathExit = np.asarray(pathExit)
         self.accDroplets = accDroplets
+
+        self.position = np.asarray([-1.,-1.])
         self.timeInResturant = 0
         self.stepCounter = 0
-        Status = int
-        self.OUT:  Status = 0
-        self.GO_IN: Status = 1
-        self.SITTING: Status = 3
-        self.GO_EXIT:  Status = 4
+
 
     def Step(self):
-        currentPos = (-1,-1)
-        
-        if self.state == self.GO_IN:
+
+        if self.state == "GO_IN":
             if len(self.pathIn) > self.stepCounter:
-                currentPos = self.pathIn[self.stepCounter]
+                self.position = self.pathIn[self.stepCounter]
                 self.stepCounter += 1
             else:
-                self.state = self.SITTING
+                self.state = "SITTING"
                 self.stepCounter = 0
 
-        elif self.state == self.SITTING:
-            currentPos = self.pathIn[len(self.pathIn)-1]
+        elif self.state == "SITTING":
             self.stepCounter += 1
 
-        elif self.state == self.GO_EXIT:
-            if len(self.stepCounter) > self.stepCounter:
-                currentPos = self.pathIn[self.stepCounter]
+            if self.eatTime < self.stepCounter:
+                self.state = "GO_EXIT"
+                self.stepCounter = 0
+
+        elif self.state == "GO_EXIT":
+            if len(self.pathExit) > self.stepCounter:
+                self.position = self.pathExit[self.stepCounter]
                 self.stepCounter += 1
             else:
-                self.state = self.OUT
+                self.state = "OUT"
                 self.stepCounter = 0
+        else:
+            self.position = [-1,-1]
+            self.stepCounter = 0
 
         self.timeInResturant += 1
 
-        return currentPos
+        return self.position
 
     def SetState(self, state):
         self.state = state
@@ -57,8 +63,16 @@ class Agent:
     def GetPathIn(self):
         return self.pathIn
 
+    def AddDroplets(self, droplets):
+        self.accDroplets = self.accDroplets + droplets
+
     def GetPathExit(self):
         return self.pathExit
     
+    def GetPosition(self):
+        return self.position
+
     def SetPosition(self, position):
-        self.position = position
+        self.position = self.position
+
+
