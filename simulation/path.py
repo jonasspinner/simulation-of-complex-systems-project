@@ -47,8 +47,7 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
     return graph
 
 
-def find_path(environment: nx.networkx, start: Pos, end: Pos) -> List[Pos]:
-    graph = build_graph(environment)
+def find_path(graph: nx.Graph, start: Pos, end: Pos) -> List[Pos]:
     # noinspection PyTypeChecker
     return nx.astar_path(graph, start, end, heuristic=distance, weight="cost")
 
