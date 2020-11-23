@@ -44,7 +44,7 @@ def getVisibilityMaps(environment : np.ndarray, resolution : int)  -> np.ndarray
                 
                 if envState in [1,2,3,4]:
                     visibilityMap[np.floor(vRowPos),np.floor(vColPos)] = 1
-                if envState = 0:
+                if envState == 0:
                     visibilityMap[np.floor(vRowPos),np.floor(vColPos)] = 0
                     break
                 
@@ -53,8 +53,8 @@ def getVisibilityMaps(environment : np.ndarray, resolution : int)  -> np.ndarray
                     
     
     nRow, nCol = environment.shape
-    nRow = linspace(0,nRow-1,nRow)
-    nCol = linspace(0,nCol-1,nCol)
+    nRow = np.linspace(0,nRow-1,nRow)
+    nCol = np.linspace(0,nCol-1,nCol)
     matrix = np.zeros((nRow,nCol),dtype=object)
     # Loop though environment, add each positions visibility matrix
     for i in nRow:
