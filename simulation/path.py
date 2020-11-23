@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 
-from loader import TileType, Pos
+from simulation.loader import TileType, Pos
 
 building_cmap = ListedColormap([
     [0.5, 0.5, 0.5, 1],  # wall
