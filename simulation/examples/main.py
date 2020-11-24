@@ -4,8 +4,8 @@ This is the main executable script.
 It can be executed by running `python3 ./simulation/main.py`
 """
 
-from core import print_hi
-from mesa_example import run_mesa_example, plot_mesa_example
+from simulation.examples.core import print_hi
+from simulation.examples.mesa_example import run_mesa_example, plot_mesa_example
 import matplotlib.pyplot as plt
 from pathlib import Path
 
