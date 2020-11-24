@@ -17,15 +17,15 @@ X                    C              CTTTC                  X
 XCCCCCCCCCC                           T                    X
 XTTTTTTTTTT                           C                    X
 XCCCCCCCCCC                                                X
-X                       C                                  X
-X                       T                                  X
-X                     CTTTC                                X
-X                       T                                  X
-XCCCCCCCCCC             C            C                     X
-XTTTTTTTTTT                          T                     X
-XCCCCCCCCCC                        CTTTC                   E
-X                                    T                     E
-X                                    C                     X
+X                       C                               XVVX
+X                       T                               X  X
+X                     CTTTC                             X  X
+X                       T                               X  X
+XCCCCCCCCCC             C            C                  X  X
+XTTTTTTTTTT                          T                XXX  X
+XCCCCCCCCCC                        CTTTC              <    E
+X                                    T                <    E
+X                                    C                XXXXXX
 X                                                          X
 X                                                          X
 XCCCCCCCCCC                                                X

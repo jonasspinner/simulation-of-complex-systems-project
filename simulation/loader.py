@@ -13,6 +13,10 @@ class TileType(IntEnum):
     SEAT = 2
     ENTRY = 3
     FOOD = 4
+    ONEWAY_UP = 5
+    ONEWAY_RIGHT = 6
+    ONEWAY_DOWN = 7
+    ONEWAY_LEFT = 8
 
 
 TILE_MAP: Mapping[str, TileType] = {
@@ -21,7 +25,11 @@ TILE_MAP: Mapping[str, TileType] = {
     "C": TileType.SEAT,
     "X": TileType.WALL,
     "E": TileType.ENTRY,
-    "F": TileType.FOOD
+    "F": TileType.FOOD,
+    "A": TileType.ONEWAY_UP,
+    ">": TileType.ONEWAY_RIGHT,
+    "V": TileType.ONEWAY_DOWN,
+    "<": TileType.ONEWAY_LEFT
 }
 
 
