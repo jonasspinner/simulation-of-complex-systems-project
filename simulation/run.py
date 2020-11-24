@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 
-from agent import Agent
+from agent import Agent, AgentState
 from loader import load_environment
 from path import find_path, build_graph, building_cmap
 
@@ -27,7 +27,7 @@ def main(save_file_to_disk=False, resolution=1):
     for seat_position in seats:
         path_to_seat = find_path(graph, food_position, seat_position)
         path_to_exit = find_path(graph, seat_position, entry_position)
-        agents.append(Agent(pathIn=path_to_food + path_to_seat, pathExit=path_to_exit))
+        agents.append(Agent(path_in=path_to_food + path_to_seat, path_out=path_to_exit))
 
     # Plot code
     fig, ax = plt.subplots(figsize=(5, 3))
@@ -45,18 +45,18 @@ def main(save_file_to_disk=False, resolution=1):
         circles.append(circle)
         ax.add_patch(circle)
 
-    def update_agents(frame):
+    def update_agents(_frame):
         for agent, circle in zip(agents, circles):
-            if agent.state == "OUT" and np.random.random() < 1 / len(agents):
-                agent.state = "GO_IN"
+            if agent.state == AgentState.OUTSIDE and np.random.random() < 1 / len(agents):
+                agent.state = AgentState.ARRIVING
 
-            agent.Step()
+            agent.step()
             y, x = agent.position
             circle.center = (x, y)
         return circles
 
     if save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=10, frames=100, repeat=False)
+        animation = FuncAnimation(fig, update_agents, interval=10, frames=1000, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)
