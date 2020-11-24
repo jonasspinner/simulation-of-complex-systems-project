@@ -18,6 +18,7 @@ building_cmap = ListedColormap([
     [0, 0, 1, 1]  # food
 ])
 
+runSaveFile = True
 res = 1
 environment, entryPosition, foodPosition, seatPositions = load_environment("map1", res)
 
@@ -31,44 +32,39 @@ for x in seatPositions:
     pathExit = find_path(environment, x, entryPosition[0])
     agentPop.append( Agent(pathIn = pathToFood+pathToSeat, pathExit = pathExit))
 
-run = True
-while run:
-    pos = agentPop[0].Step()
-    if pos != (-1,-1):
-        a = 1
-    else:
-        run = False
-
 
 #Plot code
-fig, ax = plt.subplots(figsize=(5, 3))
+fig, ax1 = plt.subplots(figsize=(5, 3))
 #Plot the map
 height, width = environment.shape
-ax.set(xlim=(0, width), ylim=(0, height))
+ax1.set(xlim=(0, width), ylim=(0, height))
 im = plt.imshow(environment, cmap=building_cmap)
-#Plot walk pattern
-path = agentPop[0].GetPathIn()
-ys, xs = zip(*path)
-line, = ax.plot(xs, ys, "k-")
+
+circleList = []
+
+for agent in range(len(agentPop)):
+    tmpPosition = agentPop[agent].GetPosition()
+    circle = plt.Circle((tmpPosition[0], tmpPosition[1]), res/4, fc='k', fill=True)
+
+    circleList.append(circle)
+    ax1.add_patch(circleList[agent])
 
 
 def updateAgents(frame):
 
-    #Get paths from agents
-    pathEnter = agentPop[frame].GetPathIn()
-    pathExit = agentPop[frame].GetPathExit()
-    pathTotal = pathEnter + pathExit
+    for agent in range(len(agentPop)):
+        if agentPop[agent].GetState() == "OUT" and np.random.random() < 1/len(agentPop):
+            agentPop[agent].SetState("GO_IN")
 
-    #Get it in nice format
-    ys, xs = zip(*pathTotal)
+        tmpPosition=agentPop[agent].Step()
 
-    #Update the line
-    line.set_xdata(xs)
-    line.set_ydata(ys)
+        circleList[agent].center = (tmpPosition[1],tmpPosition[0])
 
-    return line
+    return circleList
 
-
-animation = FuncAnimation(fig, updateAgents, frames = len(agentPop), interval=100, repeat=True)
-
+if runSaveFile:
+    animation = FuncAnimation(fig, updateAgents, interval=10, frames=1000, repeat=False)
+    animation.save('runAnimiation.mp4', fps=30, extra_args=['-vcodec', 'libx264'])
+else:
+    animation = FuncAnimation(fig, updateAgents, interval=10)
 plt.show()
