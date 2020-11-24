@@ -17,11 +17,12 @@ class TileType(IntEnum):
     ONEWAY_RIGHT = 6
     ONEWAY_DOWN = 7
     ONEWAY_LEFT = 8
+    TABLE = 9
 
 
 TILE_MAP: Mapping[str, TileType] = {
     " ": TileType.FLOOR,
-    "T": TileType.WALL,
+    "T": TileType.TABLE,
     "C": TileType.SEAT,
     "X": TileType.WALL,
     "E": TileType.ENTRY,

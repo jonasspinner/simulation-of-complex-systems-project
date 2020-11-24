@@ -6,10 +6,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 
-from simulation.loader import TileType, Pos
+from simulation.loader import TileType, Pos, Mapping
 
 building_cmap = ListedColormap([
-    [0.5, 0.5, 0.5, 1],  # wall
+    [0.4, 0.4, 0.4, 1],  # wall
     [1, 1, 1, 1],  # floor
     [1, 0, 0, 1],  # seat
     [0, 1, 0, 1],  # entry
@@ -17,7 +17,8 @@ building_cmap = ListedColormap([
     [1, 0, 1, 1],  # up
     [1, 0, 1, 1],  # right
     [1, 0, 1, 1],  # down
-    [1, 0, 1, 1]  # left
+    [1, 0, 1, 1],  # left
+    [0.6, 0.6, 0.6, 1]  # table
 ])
 
 
@@ -32,16 +33,18 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
     graph = nx.DiGraph()
     graph.add_nodes_from(positions)
 
+    non_passable = {TileType.WALL, TileType.TABLE}
+
     def tiles_from_deltas(pos: Pos, deltas: List[Pos]) -> List[Pos]:
         i, j = pos
         candidates = [(i + di, j + dj) for di, dj in deltas]
         return [(i, j) for i, j in candidates
-                if 0 <= i < height and 0 <= j < width and environment[i, j] != TileType.WALL]
+                if 0 <= i < height and 0 <= j < width and environment[i, j] not in non_passable]
 
     def neighbors(pos: Pos) -> List[Pos]:
         return tiles_from_deltas(pos, [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)])
 
-    direction_deltas = {
+    direction_deltas: Mapping[TileType, List[Pos]] = {
         TileType.ONEWAY_UP: [(-1, -1), (-1, 0), (-1, 1)],
         TileType.ONEWAY_RIGHT: [(-1, 1), (0, 1), (1, 1)],
         TileType.ONEWAY_DOWN: [(1, 1), (1, 0), (1, -1)],
