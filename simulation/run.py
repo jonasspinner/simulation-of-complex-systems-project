@@ -1,4 +1,4 @@
-from path import find_path, plot_path
+from path import find_path, plot_path, build_graph
 from loader import load_environment
 from agent import Agent
 import matplotlib.pyplot as plot 
@@ -18,18 +18,20 @@ building_cmap = ListedColormap([
     [0, 0, 1, 1]  # food
 ])
 
-runSaveFile = True
+runSaveFile = False
 res = 1
 environment, entryPosition, foodPosition, seatPositions = load_environment("map1", res)
 
+environmentGraph = build_graph(environment)
+
 agentPop = []
 #Create path to food place from entrence
-pathToFood = find_path(environment, entryPosition[0], foodPosition[0])
+pathToFood = find_path(environmentGraph, entryPosition[0], foodPosition[0])
 
 #Create agents walk path. This is to avoide calculating the path each iteration.
 for x in seatPositions:
-    pathToSeat = find_path(environment, foodPosition[0], x)
-    pathExit = find_path(environment, x, entryPosition[0])
+    pathToSeat = find_path(environmentGraph, foodPosition[0], x)
+    pathExit = find_path(environmentGraph, x, entryPosition[0])
     agentPop.append( Agent(pathIn = pathToFood+pathToSeat, pathExit = pathExit))
 
 
