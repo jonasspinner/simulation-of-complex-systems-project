@@ -4,7 +4,7 @@ def getVisibilityMaps(environment : np.ndarray, resolution : int)  -> np.ndarray
     """
     Parameters
     ----------
-    map : matrix
+    environment : matrix
         In correct dimensions, i.e resolution has allready been applied
     resolution : int
         Use this for scale, i.e if we decide that one original square is 50x50 cm,
@@ -31,7 +31,7 @@ def getVisibilityMaps(environment : np.ndarray, resolution : int)  -> np.ndarray
         radius = 4*resolution
         dRadius = np.linspace(0,radius,40)
         dTheta = np.linspace(0,2*np.pi,40)
-        visibilityMap = 2 + np.zeros((radius*2,radius*2),dtype=int)
+        visibilityMap = 2 + np.zeros((radius*2 + 1,radius*2 + 1),dtype=int)
         
         for theta in dTheta:            
             for radius in dRadius:
@@ -55,10 +55,11 @@ def getVisibilityMaps(environment : np.ndarray, resolution : int)  -> np.ndarray
     nRow, nCol = environment.shape
     nRow = np.linspace(0,nRow-1,nRow)
     nCol = np.linspace(0,nCol-1,nCol)
-    matrix = np.zeros((nRow,nCol),dtype=object)
-    # Loop though environment, add each positions visibility matrix
+    visibilityMatrix = np.zeros((nRow,nCol),dtype=object)
+    # Loop though environment, add each positions visibility map
     for i in nRow:
         for j in nCol:
             if environment[i,j] != 0:
-                matrix[int(i),int(j)] = getVisibility(environment, resolution, int(i), int(j))
+                visibilityMatrix[int(i),int(j)] = getVisibility(environment, resolution, int(i), int(j))
+    return visibilityMatrix
         
