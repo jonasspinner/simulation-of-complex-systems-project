@@ -40,7 +40,7 @@ def main(save_file_to_disk=False, resolution=1):
 
     for i, agent in enumerate(agents):
         y, x = agent.position
-        circle = plt.Circle((x, y), resolution / 4, fc='k', fill=True)
+        circle = plt.Circle((x, y), resolution / 4, fc='k', ec = 'g', fill=True)
 
         circles.append(circle)
         ax.add_patch(circle)
@@ -49,10 +49,25 @@ def main(save_file_to_disk=False, resolution=1):
         for agent, circle in zip(agents, circles):
             if agent.state == AgentState.OUTSIDE and np.random.random() < 1 / len(agents):
                 agent.state = AgentState.ARRIVING
+                if np.random.random() < 5 / len(agents):
+                    agent.infected = True
+                    circle.set_ec( 'r')
 
             agent.step()
             y, x = agent.position
             circle.center = (x, y)
+
+            if agent.state == AgentState.LEFT:
+
+                if agent.infected:
+                    agent.infected = False
+                    circle.set_ec( 'g')
+
+                agent.state = AgentState.OUTSIDE
+
+
+
+
         return circles
 
     if save_file_to_disk:
@@ -64,4 +79,4 @@ def main(save_file_to_disk=False, resolution=1):
 
 
 if __name__ == '__main__':
-    main(save_file_to_disk=True)
+    main(save_file_to_disk=False)

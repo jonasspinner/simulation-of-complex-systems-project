@@ -7,6 +7,7 @@ class AgentState(Enum):
     SITTING = "SITTING"
     ARRIVING = "ARRIVING"
     LEAVING = "LEAVING"
+    LEFT = "LEFT"
 
 
 class Agent:
@@ -53,7 +54,7 @@ class Agent:
                 self.position = self.path_out[self.step_counter]
                 self.step_counter += 1
             else:
-                self.state = AgentState.OUTSIDE
+                self.state = AgentState.LEFT
                 self.step_counter = 0
         else:
             self.position = (-1, -1)
