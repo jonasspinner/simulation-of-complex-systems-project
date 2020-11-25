@@ -8,8 +8,10 @@ from agent import Agent, AgentState
 from loader import load_environment
 from path import find_path, build_graph, building_cmap
 
+from GaussianSpread import GaussianSpread
 
-def main(save_file_to_disk=False, resolution=1):
+
+def main(save_file_to_disk=False, resolution=2):
     input_map_path = Path(__file__).parent.parent / "data" / "test-map-1.txt"
     output_video_path = Path(__file__).parent.parent / "run-animation.mp4"
 
@@ -36,6 +38,11 @@ def main(save_file_to_disk=False, resolution=1):
     ax.set(xlim=(0, width), ylim=(0, height))
     ax.imshow(environment, cmap=building_cmap)
 
+    particle_map = np.zeros((height, width))
+    infection_spread = GaussianSpread(infectionMap = particle_map, resolution = resolution)
+
+    particle_overlay = ax.imshow(particle_map, alpha=0.5, cmap='Reds', vmin=0.0, vmax=25.0)
+
     circles = []
 
     for i, agent in enumerate(agents):
@@ -46,6 +53,10 @@ def main(save_file_to_disk=False, resolution=1):
         ax.add_patch(circle)
 
     def update_agents(_frame):
+        particle_map = infection_spread.infectionMap
+
+        infected_pos_list = []
+
         for agent, circle in zip(agents, circles):
             if agent.state == AgentState.OUTSIDE and np.random.random() < 1 / len(agents):
                 agent.state = AgentState.ARRIVING
@@ -65,10 +76,13 @@ def main(save_file_to_disk=False, resolution=1):
 
                 agent.state = AgentState.OUTSIDE
 
+            if agent.infected:
+                infected_pos_list.append(agent.position)
 
+        particle_map = infection_spread.Step(infected_pos_list)
+        particle_overlay.set_data(particle_map)
 
-
-        return circles
+        return circles, particle_overlay
 
     if save_file_to_disk:
         animation = FuncAnimation(fig, update_agents, interval=10, frames=1000, repeat=False)
