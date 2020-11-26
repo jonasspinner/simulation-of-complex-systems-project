@@ -28,7 +28,7 @@ class Agent:
         self.path_in = path_in  # to food + seat
         self.path_out = path_out
         self.accumulated_droplets = accumulated_droplets
-
+        self.droplets_list = []
         self.position = (-1, -1)
         self.time_spent_in_restaurant = 0
         self.step_counter = 0

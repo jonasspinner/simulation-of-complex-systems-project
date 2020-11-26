@@ -22,6 +22,10 @@ def main(save_file_to_disk=False, resolution=2):
     graph = build_graph(environment)
 
     agents = []
+    accumulated_droplets_list = []
+    droplets_list_of_list = []
+    time_spent_in_restaurant_list = []
+
     # Create path to food place from entrance
     path_to_food = find_path(graph, entry_position, food_position)
 
@@ -64,20 +68,35 @@ def main(save_file_to_disk=False, resolution=2):
                     agent.infected = True
                     circle.set_ec( 'r')
 
-            agent.step()
-            y, x = agent.position
-            circle.center = (x, y)
+            if agent.state != AgentState.OUTSIDE:
 
-            if agent.state == AgentState.LEFT:
+                agent.step()
+                y, x = agent.position
+                circle.center = (x, y)
 
-                if agent.infected:
-                    agent.infected = False
-                    circle.set_ec( 'g')
+                if agent.state == AgentState.LEFT:
 
-                agent.state = AgentState.OUTSIDE
+                    accumulated_droplets_list.append(agent.accumulated_droplets)
+                    agent.accumulated_droplets = 0
 
-            if agent.infected:
-                infected_pos_list.append(agent.position)
+                    droplets_list_of_list.append(agent.droplets_list)
+                    agent.droplets_list = []
+                    
+                    time_spent_in_restaurant_list.append(agent.time_spent_in_restaurant)
+                    agent.time_spent_in_restaurant = 0
+
+                    if agent.infected:
+                        agent.infected = False
+                        circle.set_ec( 'g')
+
+                    agent.state = AgentState.OUTSIDE
+
+                else:
+                    if agent.infected:
+                        infected_pos_list.append(agent.position)
+                    else:
+                        agent.accumulated_droplets += particle_map[agent.position[0], agent.position[1]]
+                        agent.droplets_list.append(particle_map[agent.position[0], agent.position[1]])
 
         particle_map = infection_spread.Step(infected_pos_list)
         particle_overlay.set_data(particle_map)
@@ -91,6 +110,18 @@ def main(save_file_to_disk=False, resolution=2):
         animation = FuncAnimation(fig, update_agents, interval=10)
     plt.show()
 
+    accumulated_droplets_list.sort()
+    plt.plot(accumulated_droplets_list)
+    plt.title("Accumalted drops during resturang visit")
+    plt.xlabel("Agent listed from best to worst")
+    plt.ylabel("Accumilated drops")
+    plt.show()
+
+    plt.plot(droplets_list_of_list[-1])
+    plt.title('Last agent to leave resturang')
+    plt.xlabel("Time steps")
+    plt.ylabel("Drop in area during time step")
+    plt.show()
 
 if __name__ == '__main__':
     main(save_file_to_disk=False)
