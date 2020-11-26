@@ -1,4 +1,4 @@
-from enum import IntEnum, unique, auto
+from enum import IntEnum, unique
 from typing import Tuple, Mapping, List
 
 import numpy as np
@@ -36,6 +36,9 @@ TILE_MAP: Mapping[str, TileType] = {
 
 def load_environment(file_name: str, resolution: int) -> Tuple[np.ndarray, List[Pos], List[Pos], List[Pos]]:
     """
+    Positions in for the environment are (x, y). The position (0, 0) is the top left position and (width-1, height-1) is
+    the lower right position.
+
     Parameters
     ----------
     file_name : str
@@ -51,28 +54,30 @@ def load_environment(file_name: str, resolution: int) -> Tuple[np.ndarray, List[
     """
     with open(file_name) as file:
         rows = [line.strip() for line in file]
-        height, width = len(rows), max(len(row) for row in rows)
 
-        if any(len(row) != width for row in rows):
-            line_messages = [f"Line {i} ({len(row)} != {width}) \"{row}\""
-                             for i, row in enumerate(rows) if len(row) != width]
-            raise RuntimeError(f"Every row should have the same size. {' '.join(line_messages)}.")
+    height, width = len(rows), max(len(row) for row in rows)
 
-        matrix = np.zeros((height * resolution, width * resolution), dtype=int)
-        positions: Mapping[TileType.Tile, List[Pos]] = {
-            TileType.ENTRY: [], TileType.FOOD: [], TileType.SEAT: []
-        }
+    if any(len(row) != width for row in rows):
+        line_messages = [f"Line {i} ({len(row)} != {width}) \"{row}\""
+                         for i, row in enumerate(rows) if len(row) != width]
+        raise RuntimeError(f"Every row should have the same size. {' '.join(line_messages)}.")
 
-        for i, cols in enumerate(rows):
-            for j, character in enumerate(cols):
-                row, col = i * resolution, j * resolution
+    matrix = np.zeros((width * resolution, height * resolution), dtype=int)
+    positions: Mapping[TileType.Tile, List[Pos]] = {
+        TileType.ENTRY: [], TileType.FOOD: [], TileType.SEAT: []
+    }
 
-                if character in TILE_MAP:
-                    tile_type = TILE_MAP[character]
-                    matrix[row:row + resolution, col:col + resolution] = tile_type
+    for i, cols in enumerate(rows):
+        for j, character in enumerate(cols):
+            x = j * resolution
+            y = i * resolution
 
-                    if tile_type in (TileType.ENTRY, TileType.FOOD, TileType.SEAT):
-                        center = (row + resolution // 2, col + resolution // 2)
-                        positions[tile_type].append(center)
+            if character in TILE_MAP:
+                tile_type = TILE_MAP[character]
+                matrix[x:x + resolution, y:y + resolution] = tile_type
 
-        return matrix, positions[TileType.ENTRY], positions[TileType.FOOD], positions[TileType.SEAT]
+                if tile_type in (TileType.ENTRY, TileType.FOOD, TileType.SEAT):
+                    center = (x + resolution // 2, y + resolution // 2)
+                    positions[tile_type].append(center)
+
+    return matrix, positions[TileType.ENTRY], positions[TileType.FOOD], positions[TileType.SEAT]

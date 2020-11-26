@@ -27,8 +27,8 @@ def distance(u: Pos, v: Pos) -> float:
 
 
 def build_graph(environment: np.ndarray) -> nx.DiGraph:
-    height, width = environment.shape
-    positions = list(product(range(height), range(width)))
+    width, height = environment.shape
+    positions = list(product(range(width), range(height)))
 
     graph = nx.DiGraph()
     graph.add_nodes_from(positions)
@@ -36,27 +36,27 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
     non_passable = {TileType.WALL, TileType.TABLE}
 
     def tiles_from_deltas(pos: Pos, deltas: List[Pos]) -> List[Pos]:
-        i, j = pos
-        candidates = [(i + di, j + dj) for di, dj in deltas]
-        return [(i, j) for i, j in candidates
-                if 0 <= i < height and 0 <= j < width and environment[i, j] not in non_passable]
+        x, y = pos
+        candidates = [(x + dx, y + dy) for dx, dy in deltas]
+        return [(x, y) for x, y in candidates
+                if 0 <= x < width and 0 <= y < height and environment[x, y] not in non_passable]
 
     def neighbors(pos: Pos) -> List[Pos]:
         return tiles_from_deltas(pos, [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)])
 
     direction_deltas: Mapping[TileType, List[Pos]] = {
-        TileType.ONEWAY_UP: [(-1, -1), (-1, 0), (-1, 1)],
-        TileType.ONEWAY_RIGHT: [(-1, 1), (0, 1), (1, 1)],
-        TileType.ONEWAY_DOWN: [(1, 1), (1, 0), (1, -1)],
-        TileType.ONEWAY_LEFT: [(-1, -1), (1, -1), (0, -1)]
+        TileType.ONEWAY_UP: [(-1, -1), (0, -1), (1, -1)],  # dy = -1
+        TileType.ONEWAY_RIGHT: [(1, -1), (1, 0), (1, 1)],  # dx = 1
+        TileType.ONEWAY_DOWN: [(-1, 1), (0, 1), (1, 1)],  # dy = 1
+        TileType.ONEWAY_LEFT: [(-1, -1), (-1, 0), (-1, 1)]  # dx = -1
     }
 
     for u in positions:
         if environment[u] == TileType.WALL:
             continue
 
-        target_tiles = neighbors(u)\
-            if environment[u] not in direction_deltas\
+        target_tiles = neighbors(u) \
+            if environment[u] not in direction_deltas \
             else tiles_from_deltas(u, direction_deltas[environment[u]])
 
         for v in target_tiles:
@@ -74,8 +74,8 @@ def find_path(graph: nx.DiGraph, start: Pos, end: Pos) -> List[Pos]:
 
 
 def plot_path(environment: np.ndarray, path: Optional[List[Pos]] = None) -> None:
-    plt.imshow(environment, cmap=building_cmap)
+    plt.imshow(environment.T, cmap=building_cmap)
     if path is not None:
-        ys, xs = zip(*path)
+        xs, ys = zip(*path)
         plt.plot(xs, ys, "k-")
     plt.show()
