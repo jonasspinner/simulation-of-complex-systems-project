@@ -4,11 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 
+from GaussianSpread import GaussianSpread
 from agent import Agent, AgentState
 from loader import load_environment
 from path import find_path, build_graph, building_cmap
-
-from GaussianSpread import GaussianSpread
 
 
 def main(save_file_to_disk=False, resolution=2):
@@ -38,20 +37,19 @@ def main(save_file_to_disk=False, resolution=2):
     # Plot code
     fig, ax = plt.subplots(figsize=(5, 3))
     # Plot the map
-    height, width = environment.shape
-    ax.set(xlim=(0, width), ylim=(0, height))
-    ax.imshow(environment, cmap=building_cmap)
+    width, height = environment.shape
+    ax.set(xlim=(0, width), ylim=(height, 0))
+    ax.imshow(environment.T, cmap=building_cmap)
 
-    particle_map = np.zeros((height, width))
-    infection_spread = GaussianSpread(infectionMap = particle_map, resolution = resolution)
+    particle_map = np.zeros((width, height))
+    infection_spread = GaussianSpread(infectionMap=particle_map, resolution=resolution)
 
-    particle_overlay = ax.imshow(particle_map, alpha=0.5, cmap='Reds', vmin=0.0, vmax=25.0)
+    particle_overlay = ax.imshow(particle_map.T, alpha=0.5, cmap='Reds', vmin=0.0, vmax=25.0)
 
     circles = []
 
     for i, agent in enumerate(agents):
-        y, x = agent.position
-        circle = plt.Circle((x, y), resolution / 4, fc='k', ec = 'g', fill=True)
+        circle = plt.Circle(agent.position, resolution / 4, fc='k', ec='g', fill=True)
 
         circles.append(circle)
         ax.add_patch(circle)
@@ -66,13 +64,12 @@ def main(save_file_to_disk=False, resolution=2):
                 agent.state = AgentState.ARRIVING
                 if np.random.random() < 5 / len(agents):
                     agent.infected = True
-                    circle.set_ec( 'r')
+                    circle.set_ec('r')
 
             if agent.state != AgentState.OUTSIDE:
 
                 agent.step()
-                y, x = agent.position
-                circle.center = (x, y)
+                circle.center = agent.position
 
                 if agent.state == AgentState.LEFT:
 
@@ -81,13 +78,13 @@ def main(save_file_to_disk=False, resolution=2):
 
                     droplets_list_of_list.append(agent.droplets_list)
                     agent.droplets_list = []
-                    
+
                     time_spent_in_restaurant_list.append(agent.time_spent_in_restaurant)
                     agent.time_spent_in_restaurant = 0
 
                     if agent.infected:
                         agent.infected = False
-                        circle.set_ec( 'g')
+                        circle.set_ec('g')
 
                     agent.state = AgentState.OUTSIDE
 
@@ -95,11 +92,11 @@ def main(save_file_to_disk=False, resolution=2):
                     if agent.infected:
                         infected_pos_list.append(agent.position)
                     else:
-                        agent.accumulated_droplets += particle_map[agent.position[0], agent.position[1]]
-                        agent.droplets_list.append(particle_map[agent.position[0], agent.position[1]])
+                        agent.accumulated_droplets += particle_map[agent.position]
+                        agent.droplets_list.append(particle_map[agent.position])
 
         particle_map = infection_spread.Step(infected_pos_list)
-        particle_overlay.set_data(particle_map)
+        particle_overlay.set_data(particle_map.T)
 
         return circles, particle_overlay
 
@@ -112,16 +109,17 @@ def main(save_file_to_disk=False, resolution=2):
 
     accumulated_droplets_list.sort()
     plt.plot(accumulated_droplets_list)
-    plt.title("Accumalted drops during resturang visit")
+    plt.title("Accumulated drops during restaurant visit")
     plt.xlabel("Agent listed from best to worst")
-    plt.ylabel("Accumilated drops")
+    plt.ylabel("Accumulated drops")
     plt.show()
 
     plt.plot(droplets_list_of_list[-1])
-    plt.title('Last agent to leave resturang')
+    plt.title('Last agent to leave restaurant')
     plt.xlabel("Time steps")
     plt.ylabel("Drop in area during time step")
     plt.show()
 
+
 if __name__ == '__main__':
-    main(save_file_to_disk=False)
+    main(save_file_to_disk=True)
