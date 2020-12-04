@@ -1,0 +1,25 @@
+XXXXXXXXXXXXXXXXXXXXXXXXX
+X  CTC CTC CTC CTC CTC  X
+X  CTC CTC CTC CTC CTC  X
+X                       X
+XCCC   CTC CTC CTC      F
+XTTT   CTC CTC CTC      F
+XCCC   CTC CTC CTC      X
+X                    XVVX
+XCCCC  CTC CTC      XX  X
+XTTTT  CTC CTC      X   X
+XCCCC               <   E
+X      CTC CTC      <   E
+XCCC   CTC CTC      XXXXX
+XTTT                    X
+XCCC   CTC CTC CTC CTC  X
+X      CTC CTC CTC CTC  X
+XCCC                    X
+XTTT   CTC CTC CTC CTC  X
+XCCC   CTC CTC CTC CTC  X
+X                       X
+XCCC   CTC CTC CTC CTC  X
+XTTT   CTC CTC CTC CTC  X
+XCCC   CTC CTC CTC CTC  X
+X      CTC CTC CTC CTC  X
+XXXXXXXXXXXXXXXXXXXXXXXXX
