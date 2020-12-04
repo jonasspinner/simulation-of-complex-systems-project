@@ -36,7 +36,7 @@ TILE_MAP: Mapping[str, TileType] = {
 }
 
 
-def load_environment(file_name: str, resolution: int) -> Tuple[np.ndarray, List[Pos], List[Pos], List[Pos]]:
+def load_environment(file_name: str, resolution: int) -> np.ndarray:
     """
     Positions in for the environment are (x, y). The position (0, 0) is the top left position and (width-1, height-1) is
     the lower right position.
@@ -50,9 +50,6 @@ def load_environment(file_name: str, resolution: int) -> Tuple[np.ndarray, List[
     Returns
     -------
     matrix : np.ndarray
-    entries : List[Pos]
-    foods : List[Pos]
-    seats : List[Pos]
     """
     with open(file_name) as file:
         rows = [line.strip() for line in file]
@@ -65,9 +62,6 @@ def load_environment(file_name: str, resolution: int) -> Tuple[np.ndarray, List[
         raise RuntimeError(f"Every row should have the same size. {' '.join(line_messages)}.")
 
     matrix = np.zeros((width * resolution, height * resolution), dtype=int)
-    positions: Mapping[TileType.Tile, List[Pos]] = {
-        TileType.ENTRY: [], TileType.FOOD: [], TileType.SEAT: []
-    }
 
     for i, cols in enumerate(rows):
         for j, character in enumerate(cols):
@@ -78,8 +72,10 @@ def load_environment(file_name: str, resolution: int) -> Tuple[np.ndarray, List[
                 tile_type = TILE_MAP[character]
                 matrix[x:x + resolution, y:y + resolution] = tile_type
 
-                if tile_type in (TileType.ENTRY, TileType.FOOD, TileType.SEAT):
-                    center = (x + resolution // 2, y + resolution // 2)
-                    positions[tile_type].append(center)
+    return matrix
 
-    return matrix, positions[TileType.ENTRY], positions[TileType.FOOD], positions[TileType.SEAT]
+
+def select_tiles(environment: np.ndarray, resolution: int, tile_type: TileType) -> List[Pos]:
+    start = resolution // 2
+    xs, ys = np.where(environment[start::resolution, start::resolution] == tile_type)
+    return list(zip([start + x * resolution for x in xs], [start + y * resolution for y in ys]))

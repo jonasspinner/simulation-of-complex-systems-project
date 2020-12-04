@@ -4,12 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 
-from GaussianSpread import GaussianSpread
-from particle_spread import particle_spread
 from agent import Agent, AgentState
-from loader import load_environment
-from path import find_path, build_graph, building_cmap
 from emit_particles import getDistances
+from loader import load_environment, TileType, select_tiles
+from particle_spread import particle_spread
+from path import find_path, build_graph, building_cmap
 from visibility import getVisibilityMaps
 
 
@@ -17,7 +16,11 @@ def main(save_file_to_disk=False, resolution=2):
     input_map_path = Path(__file__).parent.parent / "data" / "test-map-1.txt"
     output_video_path = Path(__file__).parent.parent / "run-animation.mp4"
 
-    environment, entries, foods, seats = load_environment(str(input_map_path), resolution)
+    environment = load_environment(str(input_map_path), resolution)
+    entries = select_tiles(environment, resolution, TileType.ENTRY)
+    foods = select_tiles(environment, resolution, TileType.FOOD)
+    seats = select_tiles(environment, resolution, TileType.SEAT)
+
     entry_position = entries[0]
     food_position = foods[0]
 
@@ -49,11 +52,11 @@ def main(save_file_to_disk=False, resolution=2):
 
     particle_map = np.zeros((width, height))
     infection_spread = particle_spread(resolution=1,
-                 environment = environment,
-                 visibilityMatrix = visibilityMatrix,
-                 particleMatrix = particle_map,
-                 distanceMatrix = distanceMatrix,
-                 emissionRate = 2.5)
+                                       environment=environment,
+                                       visibilityMatrix=visibilityMatrix,
+                                       particleMatrix=particle_map,
+                                       distanceMatrix=distanceMatrix,
+                                       emissionRate=2.5)
 
     particle_overlay = ax.imshow(particle_map.T, alpha=0.5, cmap='Reds', vmin=0.0, vmax=25.0)
 
@@ -105,8 +108,8 @@ def main(save_file_to_disk=False, resolution=2):
                     else:
                         # agent.accumulated_droplets += particle_map[agent.position]
                         # agent.droplets_list.append(particle_map[agent.position])
-                        agent.accumulated_droplets += particle_map[agent.position[0],agent.position[1]]
-                        agent.droplets_list.append(particle_map[agent.position[0],agent.position[1]])
+                        agent.accumulated_droplets += particle_map[agent.position[0], agent.position[1]]
+                        agent.droplets_list.append(particle_map[agent.position[0], agent.position[1]])
 
         # infection_spread = GaussianSpread(infectionMap=particle_map, resolution=resolution)
         particle_map = infection_spread.emit(infected_pos_list)
