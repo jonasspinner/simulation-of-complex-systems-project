@@ -4,20 +4,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 
-from GaussianSpread import GaussianSpread
-from particle_spread import particle_spread
 from agent import Agent, AgentState
-from loader import load_environment
-from path import find_path, build_graph, building_cmap
 from emit_particles import getDistances
+from loader import load_environment, TileType, select_tiles
+from particle_spread import particle_spread
+from path import find_path, build_graph, building_cmap
 from visibility import getVisibilityMaps
+from data_analysis import data_analysis
 
 
 def main(save_file_to_disk=False, resolution=2):
     input_map_path = Path(__file__).parent.parent / "data" / "test-map-1.txt"
     output_video_path = Path(__file__).parent.parent / "run-animation.mp4"
 
-    environment, entries, foods, seats = load_environment(str(input_map_path), resolution)
+    environment = load_environment(str(input_map_path), resolution)
+    entries = select_tiles(environment, resolution, TileType.ENTRY)
+    foods = select_tiles(environment, resolution, TileType.FOOD)
+    seats = select_tiles(environment, resolution, TileType.SEAT)
+
     entry_position = entries[0]
     food_position = foods[0]
 
@@ -26,6 +30,11 @@ def main(save_file_to_disk=False, resolution=2):
     agents = []
     accumulated_droplets_list = []
     droplets_list_of_list = []
+
+    risk_density_arriving_list = []
+    risk_density_sitting_list = []
+    risk_density_leaving_list = []
+
     time_spent_in_restaurant_list = []
 
     # Create path to food place from entrance
@@ -49,11 +58,11 @@ def main(save_file_to_disk=False, resolution=2):
 
     particle_map = np.zeros((width, height))
     infection_spread = particle_spread(resolution=1,
-                 environment = environment,
-                 visibilityMatrix = visibilityMatrix,
-                 particleMatrix = particle_map,
-                 distanceMatrix = distanceMatrix,
-                 emissionRate = 2.5)
+                                       environment=environment,
+                                       visibilityMatrix=visibilityMatrix,
+                                       particleMatrix=particle_map,
+                                       distanceMatrix=distanceMatrix,
+                                       emissionRate=2.5)
 
     particle_overlay = ax.imshow(particle_map.T, alpha=0.5, cmap='Reds', vmin=0.0, vmax=25.0)
 
@@ -88,6 +97,10 @@ def main(save_file_to_disk=False, resolution=2):
                     agent.accumulated_droplets = 0
 
                     droplets_list_of_list.append(agent.droplets_list)
+                    risk_density_arriving_list.append(agent.risk_density_arriving)
+                    risk_density_sitting_list.append(agent.risk_density_sitting)
+                    risk_density_leaving_list.append(agent.risk_density_leaving)
+
                     agent.droplets_list = []
 
                     time_spent_in_restaurant_list.append(agent.time_spent_in_restaurant)
@@ -105,8 +118,10 @@ def main(save_file_to_disk=False, resolution=2):
                     else:
                         # agent.accumulated_droplets += particle_map[agent.position]
                         # agent.droplets_list.append(particle_map[agent.position])
-                        agent.accumulated_droplets += particle_map[agent.position[0],agent.position[1]]
-                        agent.droplets_list.append(particle_map[agent.position[0],agent.position[1]])
+                        agent.accumulated_droplets += particle_map[agent.position[0], agent.position[1]]
+                        agent.droplets_list.append(particle_map[agent.position[0], agent.position[1]])
+
+                        agent.add_risk_density(particle_map[agent.position[0], agent.position[1]])
 
         # infection_spread = GaussianSpread(infectionMap=particle_map, resolution=resolution)
         particle_map = infection_spread.emit(infected_pos_list)
@@ -115,25 +130,14 @@ def main(save_file_to_disk=False, resolution=2):
         return circles, particle_overlay
 
     if save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=10, frames=2500, repeat=False)
+        animation = FuncAnimation(fig, update_agents, interval=10, frames=1000, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)
     plt.show()
 
-    accumulated_droplets_list.sort()
-    plt.plot(accumulated_droplets_list)
-    plt.title("Accumulated drops during restaurant visit")
-    plt.xlabel("Agent listed from best to worst")
-    plt.ylabel("Accumulated drops")
-    plt.show()
-
-    plt.plot(droplets_list_of_list[-1])
-    plt.title('Last agent to leave restaurant')
-    plt.xlabel("Time steps")
-    plt.ylabel("Drop in area during time step")
-    plt.show()
+    data_analysis(accumulated_droplets_list, droplets_list_of_list, risk_density_arriving_list, risk_density_sitting_list, risk_density_leaving_list)
 
 
 if __name__ == '__main__':
-    main(save_file_to_disk=True)
+    main(save_file_to_disk=False)
