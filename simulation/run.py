@@ -5,9 +5,12 @@ import numpy as np
 from matplotlib.animation import FuncAnimation
 
 from GaussianSpread import GaussianSpread
+from particle_spread import particle_spread
 from agent import Agent, AgentState
 from loader import load_environment
 from path import find_path, build_graph, building_cmap
+from emit_particles import getDistances
+from visibility import getVisibilityMaps
 
 
 def main(save_file_to_disk=False, resolution=2):
@@ -41,8 +44,16 @@ def main(save_file_to_disk=False, resolution=2):
     ax.set(xlim=(0, width), ylim=(height, 0))
     ax.imshow(environment.T, cmap=building_cmap)
 
+    visibilityMatrix = getVisibilityMaps(environment, resolution)
+    distanceMatrix = getDistances(visibilityMatrix, environment)
+
     particle_map = np.zeros((width, height))
-    infection_spread = GaussianSpread(infectionMap=particle_map, resolution=resolution)
+    infection_spread = particle_spread(resolution=1,
+                 environment = environment,
+                 visibilityMatrix = visibilityMatrix,
+                 particleMatrix = particle_map,
+                 distanceMatrix = distanceMatrix,
+                 emissionRate = 2.5)
 
     particle_overlay = ax.imshow(particle_map.T, alpha=0.5, cmap='Reds', vmin=0.0, vmax=25.0)
 
@@ -55,7 +66,7 @@ def main(save_file_to_disk=False, resolution=2):
         ax.add_patch(circle)
 
     def update_agents(_frame):
-        particle_map = infection_spread.infectionMap
+        particle_map = infection_spread.particleMatrix
 
         infected_pos_list = []
 
@@ -92,16 +103,19 @@ def main(save_file_to_disk=False, resolution=2):
                     if agent.infected:
                         infected_pos_list.append(agent.position)
                     else:
-                        agent.accumulated_droplets += particle_map[agent.position]
-                        agent.droplets_list.append(particle_map[agent.position])
+                        # agent.accumulated_droplets += particle_map[agent.position]
+                        # agent.droplets_list.append(particle_map[agent.position])
+                        agent.accumulated_droplets += particle_map[agent.position[0],agent.position[1]]
+                        agent.droplets_list.append(particle_map[agent.position[0],agent.position[1]])
 
-        particle_map = infection_spread.Step(infected_pos_list)
+        # infection_spread = GaussianSpread(infectionMap=particle_map, resolution=resolution)
+        particle_map = infection_spread.emit(infected_pos_list)
         particle_overlay.set_data(particle_map.T)
 
         return circles, particle_overlay
 
     if save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=10, frames=1000, repeat=False)
+        animation = FuncAnimation(fig, update_agents, interval=10, frames=2500, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)
