@@ -29,6 +29,9 @@ class Agent:
         self.path_out = path_out
         self.accumulated_droplets = accumulated_droplets
         self.droplets_list = []
+        self.risk_density_arriving = []
+        self.risk_density_sitting = []
+        self.risk_density_leaving = []
         self.position = (-1, -1)
         self.time_spent_in_restaurant = 0
         self.step_counter = 0
@@ -61,3 +64,13 @@ class Agent:
             self.step_counter = 0
 
         self.time_spent_in_restaurant += 1
+
+    def add_risk_density(self, risk_density) -> None:
+        if self.state == AgentState.ARRIVING:
+            self.risk_density_arriving.append(risk_density)
+
+        elif self.state == AgentState.SITTING:
+            self.risk_density_sitting.append(risk_density)
+
+        elif self.state == AgentState.LEAVING:
+            self.risk_density_leaving.append(risk_density)

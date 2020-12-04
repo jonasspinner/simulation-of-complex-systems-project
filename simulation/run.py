@@ -29,6 +29,11 @@ def main(save_file_to_disk=False, resolution=2):
     agents = []
     accumulated_droplets_list = []
     droplets_list_of_list = []
+
+    risk_density_arriving_list = []
+    risk_density_sitting_list = []
+    risk_density_leaving_list = []
+
     time_spent_in_restaurant_list = []
 
     # Create path to food place from entrance
@@ -91,6 +96,10 @@ def main(save_file_to_disk=False, resolution=2):
                     agent.accumulated_droplets = 0
 
                     droplets_list_of_list.append(agent.droplets_list)
+                    risk_density_arriving_list.append(agent.risk_density_arriving)
+                    risk_density_sitting_list.append(agent.risk_density_sitting)
+                    risk_density_leaving_list.append(agent.risk_density_leaving)
+
                     agent.droplets_list = []
 
                     time_spent_in_restaurant_list.append(agent.time_spent_in_restaurant)
@@ -110,6 +119,8 @@ def main(save_file_to_disk=False, resolution=2):
                         # agent.droplets_list.append(particle_map[agent.position])
                         agent.accumulated_droplets += particle_map[agent.position[0], agent.position[1]]
                         agent.droplets_list.append(particle_map[agent.position[0], agent.position[1]])
+
+                        agent.add_risk_density(particle_map[agent.position[0], agent.position[1]])
 
         # infection_spread = GaussianSpread(infectionMap=particle_map, resolution=resolution)
         particle_map = infection_spread.emit(infected_pos_list)
@@ -139,4 +150,4 @@ def main(save_file_to_disk=False, resolution=2):
 
 
 if __name__ == '__main__':
-    main(save_file_to_disk=True)
+    main(save_file_to_disk=False)
