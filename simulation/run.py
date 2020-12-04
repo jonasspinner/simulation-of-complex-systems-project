@@ -10,6 +10,7 @@ from loader import load_environment, TileType, select_tiles
 from particle_spread import particle_spread
 from path import find_path, build_graph, building_cmap
 from visibility import getVisibilityMaps
+from data_analysis import data_analysis
 
 
 def main(save_file_to_disk=False, resolution=2):
@@ -129,24 +130,13 @@ def main(save_file_to_disk=False, resolution=2):
         return circles, particle_overlay
 
     if save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=10, frames=2500, repeat=False)
+        animation = FuncAnimation(fig, update_agents, interval=10, frames=1000, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)
     plt.show()
 
-    accumulated_droplets_list.sort()
-    plt.plot(accumulated_droplets_list)
-    plt.title("Accumulated drops during restaurant visit")
-    plt.xlabel("Agent listed from best to worst")
-    plt.ylabel("Accumulated drops")
-    plt.show()
-
-    plt.plot(droplets_list_of_list[-1])
-    plt.title('Last agent to leave restaurant')
-    plt.xlabel("Time steps")
-    plt.ylabel("Drop in area during time step")
-    plt.show()
+    data_analysis(accumulated_droplets_list, droplets_list_of_list, risk_density_arriving_list, risk_density_sitting_list, risk_density_leaving_list)
 
 
 if __name__ == '__main__':
