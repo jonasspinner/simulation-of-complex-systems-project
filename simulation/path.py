@@ -18,7 +18,8 @@ building_cmap = ListedColormap([
     [1, 0, 1, 1],  # right
     [1, 0, 1, 1],  # down
     [1, 0, 1, 1],  # left
-    [0.6, 0.6, 0.6, 1]  # table
+    [0.6, 0.6, 0.6, 1],  # table
+    [0.9, 0.9, 0.9, 1],  # walking path
 ])
 
 
@@ -51,6 +52,16 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
         TileType.ONEWAY_LEFT: [(-1, -1), (-1, 0), (-1, 1)]  # dx = -1
     }
 
+    def cost(u: Pos, v: Pos) -> float:
+        value = distance(u, v)
+        if environment[u] == TileType.WALL or environment[v] == TileType.WALL:
+            value = np.inf
+        if environment[v] == TileType.SEAT:
+            value += 2.0
+        if environment[u] == TileType.WALKING_PATH and environment[v] == TileType.WALKING_PATH:
+            value *= 0.5
+        return value
+
     for u in positions:
         if environment[u] == TileType.WALL:
             continue
@@ -60,11 +71,7 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
             else tiles_from_deltas(u, direction_deltas[environment[u]])
 
         for v in target_tiles:
-            seat_movement = environment[u] == TileType.SEAT or environment[v] == TileType.SEAT
-            cost = distance(u, v)
-            if seat_movement:
-                cost += 10.0
-            graph.add_edge(u, v, cost=cost)
+            graph.add_edge(u, v, cost=cost(u, v))
     return graph
 
 

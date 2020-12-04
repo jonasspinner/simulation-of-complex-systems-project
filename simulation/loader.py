@@ -18,6 +18,7 @@ class TileType(IntEnum):
     ONEWAY_DOWN = 7
     ONEWAY_LEFT = 8
     TABLE = 9
+    WALKING_PATH = 10
 
 
 TILE_MAP: Mapping[str, TileType] = {
@@ -30,7 +31,8 @@ TILE_MAP: Mapping[str, TileType] = {
     "A": TileType.ONEWAY_UP,
     ">": TileType.ONEWAY_RIGHT,
     "V": TileType.ONEWAY_DOWN,
-    "<": TileType.ONEWAY_LEFT
+    "<": TileType.ONEWAY_LEFT,
+    ".": TileType.WALKING_PATH
 }
 
 

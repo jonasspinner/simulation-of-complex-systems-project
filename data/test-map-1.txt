@@ -4,30 +4,30 @@ X                  CTC    CTC     CTC     CTC     CTC      X
 X                  CTC    CTC     CTC     CTC     CTC      X
 XCCCCCCCCCC        CTC    CTC     CTC     CTC     CTC      X
 XTTTTTTTTTT                                                X
-XCCCCCCCCCC                                                X
-X                                                          F
-X                                                          F
-X                                                          F
 XCCCCCCCCCC                                                F
-XTTTTTTTTTT          C                                     F
-XCCCCCCCCCC          T                                     X
-X                  CTTTC              C                    X
-X                    T                T                    X
-X                    C              CTTTC                  X
-XCCCCCCCCCC                           T                    X
-XTTTTTTTTTT                           C                    X
-XCCCCCCCCCC                                                X
-X                       C                               XVVX
-X                       T                               X  X
-X                     CTTTC                             X  X
-X                       T                               X  X
-XCCCCCCCCCC             C            C                  X  X
-XTTTTTTTTTT                          T                XXX  X
-XCCCCCCCCCC                        CTTTC              <    E
-X                                    T                <    E
-X                                    C                XXXXXX
-X                                                          X
-X                                                          X
+X             .............................................F
+X            ..............................................F
+X            ..............................................F
+XCCCCCCCCCC  ...                                 ...       F
+XTTTTTTTTTT  ...     C                           ...       X
+XCCCCCCCCCC  ...     T                           ...       X
+X            ...   CTTTC              C          ...       X
+X            ...     T                T          ...       X
+X            ...     C              CTTTC        ...       X
+XCCCCCCCCCC  ...                      T          ..........X
+XTTTTTTTTTT  ...                      C          ..........X
+XCCCCCCCCCC  ...                                 ...     ..X
+X            ...        C                        ...    XVVX
+X            ...        T                        ...    X  X
+X            ...      CTTTC                      ...    X  X
+X            ...        T                        ...    X  X
+XCCCCCCCCCC  ...        C            C           ...    X  X
+XTTTTTTTTTT  ...                     T           ...  XXX  X
+XCCCCCCCCCC  ...                   CTTTC         .....<    E
+X            ...                     T           .....<    E
+X            ...                     C                XXXXXX
+X            ...                                           X
+X            ...                                           X
 XCCCCCCCCCC                                                X
 XTTTTTTTTTT       CTC    CTC    CTC    CTC    CTC   CTC    X
 XCCCCCCCCCC       CTC    CTC    CTC    CTC    CTC   CTC    X
