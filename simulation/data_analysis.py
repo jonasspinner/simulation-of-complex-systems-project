@@ -4,63 +4,81 @@ import statistics
 
 def data_analysis(accumulated_risk_list, risk_density_full_list, risk_density_arriving_list, risk_density_sitting_list, risk_density_leaving_list):
 
+
+    fig, axes = plt.subplots(nrows=2, ncols=1)
+
+    ax0, ax1 = axes.flatten()
+    
     accumulated_risk_list.sort()
-    plt.plot(accumulated_risk_list)
-    plt.title("Accumulated drops during restaurant visit")
-    plt.xlabel("Agent listed from best to worst")
-    plt.ylabel("Accumulated drops")
-    plt.show()
+    ax0.plot(accumulated_risk_list)
+    ax0.set_title("Accumulated risk during restaurant visit")
+    ax0.set_xlabel("Agent listed from best to worst")
+    ax0.set_ylabel("Accumulated risk")
 
-    for droplets_list in risk_density_full_list:
-        plt.plot(droplets_list)
+    rank = np.linspace(1,0,len(accumulated_risk_list))
 
-    plt.title('All agent to leave restaurant')
-    plt.xlabel("Time steps")
-    plt.ylabel("Drop in area during time step")
-    plt.show()
+    ax1.loglog(accumulated_risk_list,rank, 'b.',markersize=10,markerfacecolor='None', label='accumulated_risk_list loglog')
+    ax1.set_title("Accumulated risk on loglog scale")
+    ax1.set_xlabel("Accumulated risk")
+    ax1.set_ylabel("cCDF")
+
+    fig.tight_layout()
+
+
+    fig, axes = plt.subplots(nrows=2, ncols=1)
+    ax0, ax1 = axes.flatten()
+
+
+    length = max(map(len, risk_density_full_list))
+    to_plot = np.array([current_list+[0]*(length-len(current_list)) for current_list in risk_density_full_list])
+    ax0.plot(to_plot.T)
+
+    ax0.set_title('All agent')
+    ax0.set_xlabel("Time steps")
+    ax0.set_ylabel("Risk density")
+
+    ax1.plot(to_plot.sum(axis=0))
+    ax1.set_title('Sum of all agent')
+    ax1.set_xlabel("Time steps")
+    ax1.set_ylabel("Risk density")
+
+    fig.tight_layout()
 
     risk_density_arriving_list_sum = sum_of_list_in_list(risk_density_arriving_list.copy())
     risk_density_sitting_list_sum = sum_of_list_in_list(risk_density_sitting_list.copy())
     risk_density_leaving_list_sum = sum_of_list_in_list(risk_density_leaving_list.copy())
 
-    maxnr = max(accumulated_risk_list)
+    fig, axes = plt.subplots(nrows=3, ncols=1)
 
-    max_arriving = max(risk_density_arriving_list_sum)
-    max_sitting = max(risk_density_sitting_list_sum)
-    max_leaving = max(risk_density_leaving_list_sum)
+    ax0, ax1, ax2 = axes.flatten()
 
-    hist, bin_edges = np.histogram(accumulated_risk_list, density=True, bins=np.arange(0,maxnr,maxnr/10))
+    ax0.hist(risk_density_arriving_list_sum, bins=40)
+    ax0.set_ylabel("Nr of agents")
+    ax0.set_xlabel("Accumulated risk density")
+    ax0.set_title('risk_density_arriving')
 
-    plt.plot(hist)
-    plt.ylim((0, max(hist)))
+    ax1.hist(risk_density_sitting_list_sum, bins=40)
+    ax0.set_ylabel("Nr of agents")
+    ax0.set_xlabel("Accumulated risk density")
+    ax1.set_title('risk_density_sitting')
+
+    ax2.hist(risk_density_leaving_list_sum, bins=40)
+    ax0.set_ylabel("Nr of agents")
+    ax0.set_xlabel("Accumulated risk density")
+    ax2.set_title('risk_density_leaving')
+
+    fig.tight_layout()
+
+    print("Median risk when arriving:  ", round(statistics.median(risk_density_arriving_list_sum), 2))
+    print("Median risk when sitting:   ", round(statistics.median(risk_density_sitting_list_sum), 2))
+    print("Median risk when leaving:   ", round(statistics.median(risk_density_leaving_list_sum), 2))
+
+    print("Avarage risk when arriving: ", round(statistics.mean(risk_density_arriving_list_sum), 2))
+    print("Avarage risk when sitting:  ", round(statistics.mean(risk_density_sitting_list_sum), 2))
+    print("Avarage risk when leaving:  ", round(statistics.mean(risk_density_leaving_list_sum), 2))
+
     plt.show()
 
-    hist_arriving, bin_edges_arriving = np.histogram(risk_density_arriving_list_sum, density=True, bins=np.arange(0,max_arriving,max_arriving/10))
-    hist_sitting, bin_edges_sitting = np.histogram(risk_density_sitting_list_sum, density=True, bins=np.arange(0,max_sitting,max_sitting/10))
-    hist_leaving, bin_edges_leaving = np.histogram(risk_density_leaving_list_sum, density=True, bins=np.arange(0,max_leaving,max_leaving/10))
-
-    for droplets_list in risk_density_arriving_list_sum:
-        plt.plot(droplets_list)
-
-    plt.plot(hist_arriving)
-    plt.ylim((0, max(hist_arriving)))
-    plt.show()
-
-    plt.plot(hist_sitting)
-    plt.ylim((0, max(hist_sitting)))
-    plt.show()
-
-    plt.plot(hist_leaving)
-    plt.ylim((0, max(hist_leaving)))
-    plt.show()
-
-    print("Median risk when arriving: ", statistics.median(risk_density_arriving_list_sum))
-    print("Median risk when sitting: ", statistics.median(risk_density_sitting_list_sum))
-    print("Median risk when leaving: ", statistics.median(risk_density_leaving_list_sum))
-
-    print("Avarage risk when arriving: ", statistics.mean(risk_density_arriving_list_sum))
-    print("Avarage risk when sitting: ", statistics.mean(risk_density_sitting_list_sum))
-    print("Avarage risk when leaving: ", statistics.mean(risk_density_leaving_list_sum))
 
 
 def sum_of_list_in_list(input_list):

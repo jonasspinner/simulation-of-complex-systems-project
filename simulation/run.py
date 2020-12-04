@@ -16,10 +16,14 @@ from data_analysis import data_analysis
 
 def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolution=1):
 
-    sitting_min_time = 15*60
-    sitting_max_time = 45*60
+    sitting_min_time = 30*60*resolution
+    sitting_max_time = 30*60*resolution
 
-    input_map_path = Path(__file__).parent.parent / "data" / "test-map-1.txt"
+    avarage_time_steps_between_entering = 5*resolution
+
+    chance_of_being_infected = 0.01
+
+    input_map_path = Path(__file__).parent.parent / "data" / "test-map-2.txt"
     output_video_path = Path(__file__).parent.parent / "run-animation.mp4"
 
     environment = load_environment(str(input_map_path), resolution)
@@ -80,16 +84,19 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolu
         ax.add_patch(circle)
 
     def update_agents(_frame):
+
+        print(_frame)
+
         particle_map = infection_spread.particleMatrix
 
         infected_pos_list = []
 
         for agent, circle in zip(agents, circles):
-            if agent.state == AgentState.OUTSIDE and np.random.random() < 1 / len(agents):
+            if agent.state == AgentState.OUTSIDE and np.random.random() < avarage_time_steps_between_entering / len(agents):
                 agent.state = AgentState.ARRIVING
                 agent.time_spent_eating = random.randint(sitting_min_time, sitting_max_time)
                 
-                if np.random.random() < 5 / len(agents):
+                if np.random.random() < chance_of_being_infected:
                     agent.infected = True
                     circle.set_ec('r')
 
@@ -137,20 +144,20 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolu
         return circles, particle_overlay
 
     if not animate:
-        for i in range(20000):
-            print(i)
+        for i in range(40000):
             update_agents(i)
 
     elif save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=10, frames=2500, repeat=False)
+        animation = FuncAnimation(fig, update_agents, interval=1, frames=2500, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)
-        
-    plt.show()
+        plt.show()
+    
+    plt.close()
 
     if do_data_analys:
         data_analysis(accumulated_droplets_list, droplets_list_of_list, risk_density_arriving_list, risk_density_sitting_list, risk_density_leaving_list)
 
 if __name__ == '__main__':
-    main(save_file_to_disk=False)
+    main(save_file_to_disk=True)
