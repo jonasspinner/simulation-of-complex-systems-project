@@ -13,7 +13,7 @@ from visibility import getVisibilityMaps
 from data_analysis import data_analysis
 
 
-def main(save_file_to_disk=False, resolution=2):
+def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolution=1):
     input_map_path = Path(__file__).parent.parent / "data" / "test-map-1.txt"
     output_video_path = Path(__file__).parent.parent / "run-animation.mp4"
 
@@ -129,15 +129,21 @@ def main(save_file_to_disk=False, resolution=2):
 
         return circles, particle_overlay
 
-    if save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=10, frames=1000, repeat=False)
+    if not animate:
+        for i in range(2500):
+            print(i)
+            update_agents(i)
+
+    elif save_file_to_disk:
+        animation = FuncAnimation(fig, update_agents, interval=10, frames=2500, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)
+        
     plt.show()
 
-    data_analysis(accumulated_droplets_list, droplets_list_of_list, risk_density_arriving_list, risk_density_sitting_list, risk_density_leaving_list)
-
+    if do_data_analys:
+        data_analysis(accumulated_droplets_list, droplets_list_of_list, risk_density_arriving_list, risk_density_sitting_list, risk_density_leaving_list)
 
 if __name__ == '__main__':
     main(save_file_to_disk=False)
