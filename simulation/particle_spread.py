@@ -39,7 +39,7 @@ class particle_spread:
         particleMatrix : np.ndarray
             particleMatrix describes the amount of particles in every position of the map.
         """           
-        self.particleMatrix = self.particleMatrix*0.95
+        self.particleMatrix = self.particleMatrix*0.99
         
         for pos in posInfectedlist:
             emission = self.emissionRate * 1/self.distanceMatrix
