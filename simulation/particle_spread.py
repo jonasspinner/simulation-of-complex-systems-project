@@ -8,6 +8,7 @@ class particle_spread:
                  particleMatrix = np.zeros((1, 1)),
                  distanceMatrix = np.zeros((1, 1)),
                  emissionRate = float):
+        
         self.resolution = resolution
         self.environment = environment
         self.visibilityMatrix = visibilityMatrix
@@ -39,8 +40,9 @@ class particle_spread:
             particleMatrix describes the amount of particles in every position of the map.
         """           
         self.particleMatrix = self.particleMatrix*0.99
-        emission = self.emissionRate * 1/self.distanceMatrix
+        
         for pos in posInfectedlist:
+            emission = self.emissionRate * 1/self.distanceMatrix
             
             xPos = pos[0]
             yPos = pos[1]
@@ -80,6 +82,6 @@ class particle_spread:
                 
                 
             # Takes care of cases where emission matrix gets outside of particleMatrix
-            self.particleMatrix[(xPos - rangeColMin):(xPos + rangeColMax),(yPos - rangeRowMin):(yPos + rangeRowMax)] = self.particleMatrix[(xPos - rangeColMin):(xPos + rangeColMax),(yPos - rangeRowMin):(yPos + rangeRowMax)] + emission[(int(np.ceil(np.shape(emission)[0]/2)) - rangeColMin):(int(np.ceil(np.shape(emission)[0]/2)) + rangeColMax),(int(np.ceil(np.shape(emission)[1]/2)) - rangeRowMin):(int(np.ceil(np.shape(emission)[1]/2)) + rangeRowMax)]
+            self.particleMatrix[(1 + xPos - rangeColMin):(1 + xPos + rangeColMax),(1 + yPos - rangeRowMin):(1 + yPos + rangeRowMax)] = self.particleMatrix[(1 + xPos - rangeColMin):(1 + xPos + rangeColMax),(1 + yPos - rangeRowMin):(1 + yPos + rangeRowMax)] + emission[(int(np.ceil(np.shape(emission)[0]/2)) - rangeColMin):(int(np.ceil(np.shape(emission)[0]/2)) + rangeColMax),(int(np.ceil(np.shape(emission)[1]/2)) - rangeRowMin):(int(np.ceil(np.shape(emission)[1]/2)) + rangeRowMax)]
         return self.particleMatrix
     
