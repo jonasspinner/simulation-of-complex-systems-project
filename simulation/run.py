@@ -3,6 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
+import random
 
 from agent import Agent, AgentState
 from emit_particles import getDistances
@@ -14,6 +15,10 @@ from data_analysis import data_analysis
 
 
 def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolution=1):
+
+    sitting_min_time = 15*60
+    sitting_max_time = 45*60
+
     input_map_path = Path(__file__).parent.parent / "data" / "test-map-1.txt"
     output_video_path = Path(__file__).parent.parent / "run-animation.mp4"
 
@@ -82,6 +87,8 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolu
         for agent, circle in zip(agents, circles):
             if agent.state == AgentState.OUTSIDE and np.random.random() < 1 / len(agents):
                 agent.state = AgentState.ARRIVING
+                agent.time_spent_eating = random.randint(sitting_min_time, sitting_max_time)
+                
                 if np.random.random() < 5 / len(agents):
                     agent.infected = True
                     circle.set_ec('r')
@@ -130,7 +137,7 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolu
         return circles, particle_overlay
 
     if not animate:
-        for i in range(2500):
+        for i in range(20000):
             print(i)
             update_agents(i)
 
