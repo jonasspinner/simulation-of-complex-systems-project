@@ -20,23 +20,23 @@ def getDistances(visibilityMatrix : np.ndarray, environment : np.ndarray) -> np.
     # Look for a state in environment which is not a wall since those states in visibilityMatrix are empty
     found = False
     while found == False:
-        for i in range(2,20):
-            for j in range(5,20): 
-                if environment[i,j] != 0:
-                    distanceMatrix = np.full(np.shape(visibilityMatrix[int(i),int(j)]), np.inf, dtype=float)
+        for j in range(5,np.shape(environment)[0]):
+            for i in range(5,np.shape(environment)[1]): 
+                if environment[j,i] != 0:
+                    distanceMatrix = np.full(np.shape(visibilityMatrix[int(j),int(i)]), np.inf, dtype=float)
                     found = True
       
     # Calculate distances from the middle position of the matrix    
-    middlePos = [int(np.ceil(np.shape(distanceMatrix)[0]/2))-1, int(np.ceil(np.shape(distanceMatrix)[0]/2))-1]
-    iRows = np.linspace(0,np.shape(distanceMatrix)[0]-1,np.shape(distanceMatrix)[0])
-    iCols = np.linspace(0,np.shape(distanceMatrix)[1]-1,np.shape(distanceMatrix)[1])
+    middlePos = [int(np.floor(np.shape(distanceMatrix)[0]/2)), int(np.floor(np.shape(distanceMatrix)[0]/2))]
+    iCols = np.linspace(0,np.shape(distanceMatrix)[0]-1,np.shape(distanceMatrix)[0])
+    iRows = np.linspace(0,np.shape(distanceMatrix)[1]-1,np.shape(distanceMatrix)[1])
     
-    for i in iRows:
-        for j in iCols:    
-            if int(i) == middlePos[0] and int(j) == middlePos[1]:
-                distanceMatrix[int(i),int(j)] = np.inf
+    for j in iCols:
+        for i in iRows:    
+            if int(j) == middlePos[0] and int(i) == middlePos[1]:
+                distanceMatrix[int(j),int(i)] = np.inf
             else:
-                distanceMatrix[int(i),int(j)] = np.sqrt( (i-middlePos[0])**2 + (j-middlePos[1])**2 )
+                distanceMatrix[int(j),int(i)] = np.sqrt( (j-middlePos[0])**2 + (i-middlePos[1])**2 )
             
     return distanceMatrix
             
@@ -97,25 +97,7 @@ def emit(environment : np.ndarray, particleMatrix : np.ndarray, visibilityMatrix
     # Takes care of cases where emission matrix gets outside of particleMatrix
     particleMatrix[(xPos - rangeColMin):(xPos + rangeColMax),(yPos - rangeRowMin):(yPos + rangeRowMax)] = \
         particleMatrix[(xPos - rangeColMin):(xPos + rangeColMax),(yPos - rangeRowMin):(yPos + rangeRowMax)] + \
-        emission[(int(np.ceil(np.shape(emission)[1]/2)) - rangeColMin):(int(np.ceil(np.shape(emission)[1]/2)) + rangeColMax), \
-                 (int(np.ceil(np.shape(emission)[0]/2)) - rangeRowMin):(int(np.ceil(np.shape(emission)[0]/2)) + rangeRowMax)]
+        emission[(int(np.ceil(np.shape(emission)[0]/2)) - rangeColMin):(int(np.ceil(np.shape(emission)[0]/2)) + rangeColMax), \
+                 (int(np.ceil(np.shape(emission)[1]/2)) - rangeRowMin):(int(np.ceil(np.shape(emission)[1]/2)) + rangeRowMax)]
     return particleMatrix
-    
-def evaporation(particleMatrix : np.ndarray, evaporationMatrix : np.ndarray)  -> np.ndarray:
-    """
-    Parameters
-    ----------
-    particleMatrix : np.ndarray
-        particleMatrix describes the amount of particles in every position of the map.
-    evaporationMatrix : np.ndarray
-        Enables having different evaporation rates at different parts of the map. Could 
-        modek air ventilation. All elements could also just be the same.
-        Values is \in [0,1].
-
-    Returns
-    -------
-    particleMatrix : np.ndarray
-        particleMatrix describes the amount of particles in every position of the map.
-        This is after evaporation and should be done in the end of each timestep.
-    """   
-    return particleMatrix*evaporationMatrix        
+         

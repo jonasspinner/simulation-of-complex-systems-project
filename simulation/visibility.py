@@ -26,33 +26,33 @@ def getVisibilityMaps(environment : np.ndarray, resolution : int)  -> np.ndarray
          FOOD = 4
     """
     
-    def getVisibility(environment : np.ndarray, resolution : int, row : int, col : int) -> np.ndarray:        
+    def getVisibility(environment : np.ndarray, resolution : int, col : int, row : int) -> np.ndarray:        
         # how much is two meters? Assuming 1 (original) square in original map is 50 cm. 
         radius = 4*resolution
-        dRadius = np.linspace(0,radius/1.5,10)
-        dTheta = np.linspace(0,2*np.pi,10)
+        dRadius = np.linspace(0,radius/1.2,30)
+        dTheta = np.linspace(0,2*np.pi,50)
         visibilityMap = 2 + np.zeros((radius*2 + 1,radius*2 + 1),dtype=int)
         
         for theta in dTheta:            
             for rad in dRadius:
                 
-                vRowPos = radius + np.sin(theta)*rad
                 vColPos = radius + np.cos(theta)*rad
+                vRowPos = radius + np.sin(theta)*rad
                 
                 # Break if outside of map (case if entry/food is on boundry, this way food is enabled to be placed anywhere in the map)
-                environmentalRowPos = row + 0.5 + np.sin(theta)*rad              
+                environmentalColPos = col + 0.5 + np.cos(theta)*rad              
+                if environmentalColPos > np.shape(environment)[0] or environmentalColPos < 0:
+                    break
+                
+                environmentalRowPos = row + 0.5 + np.sin(theta)*rad         
                 if environmentalRowPos > np.shape(environment)[1] or environmentalRowPos < 0:
                     break
                 
-                environmentalColPos = col + 0.5 + np.cos(theta)*rad         
-                if environmentalColPos > np.shape(environment)[0]-1 or environmentalColPos < 0:
-                    break
-                
-                envState = environment[int(np.round(environmentalRowPos)),int(np.round(environmentalColPos))]                  
-                if envState in [1,2,3,4]:
-                    visibilityMap[int(np.round(vRowPos)),int(np.round(vColPos))] = 1
-                if envState == 0:
-                    visibilityMap[int(np.round(vRowPos)),int(np.round(vColPos))] = 0
+                envState = environment[int(np.floor(environmentalColPos)),int(np.floor(environmentalRowPos))]                  
+                if envState in [1,2,3,4,5,6,7,8]:
+                    visibilityMap[int(np.round(vColPos)),int(np.round(vRowPos))] = 1
+                if envState == 0 or envState == 9:
+                    visibilityMap[int(np.round(vColPos)),int(np.round(vRowPos))] = 0
                     break
                 
         # Checking for reasonable placement of starting point.
@@ -62,15 +62,15 @@ def getVisibilityMaps(environment : np.ndarray, resolution : int)  -> np.ndarray
         return visibilityMap
                     
     
-    nRow, nCol = np.shape(environment)
-    visibilityMatrix = np.zeros((nRow,nCol),dtype=object)
-    nRow = np.linspace(0,nRow-1,nRow)
+    nCol, nRow = np.shape(environment)
+    visibilityMatrix = np.zeros((nCol,nRow),dtype=object)
     nCol = np.linspace(0,nCol-1,nCol)
+    nRow = np.linspace(0,nRow-1,nRow)
     # Loop though environment, add each positions visibility map
-    for i in nRow:
-        for j in nCol:
-            if environment[int(i),int(j)] != 0:
-                visibilityMap = getVisibility(environment, resolution, int(i), int(j))
-                visibilityMatrix[int(i),int(j)] = visibilityMap
+    for j in nCol:
+        for i in nRow:
+            if environment[int(j),int(i)] != 0:
+                visibilityMap = getVisibility(environment, resolution, int(j), int(i))
+                visibilityMatrix[int(j),int(i)] = visibilityMap
     return visibilityMatrix
         
