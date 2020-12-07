@@ -79,3 +79,17 @@ class Agent:
 
         elif self.state == AgentState.LEAVING:
             self.risk_density_leaving.append(risk_density)
+
+    def reset(self) -> None:
+        self.state: AgentState = AgentState.OUTSIDE
+        self.time_spent_eating = self.time_spent_eating
+        self.infected = False
+        self.risk_density_complete = []
+        self.accumulated_risk = 0.0
+        self.accumulated_risk_list = []
+        self.risk_density_arriving = []
+        self.risk_density_sitting = []
+        self.risk_density_leaving = []
+        self.position = (-1, -1)
+        self.time_spent_in_restaurant = 0
+        self.step_counter = 0

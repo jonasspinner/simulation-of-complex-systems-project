@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 import random
+import statistics
+
 
 from agent import Agent, AgentState
 from emit_particles import getDistances
@@ -11,19 +13,19 @@ from loader import load_environment, TileType, select_tiles
 from particle_spread import particle_spread
 from path import find_path, build_graph, building_cmap
 from visibility import getVisibilityMaps
-from data_analysis import data_analysis
+from data_analysis import data_analysis, sum_of_list_in_list
 
 
-def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolution=1):
+def main(save_file_to_disk=False, animate = False, do_data_analys = False, resolution=1):
 
-    sitting_min_time = 30*60*resolution
-    sitting_max_time = 30*60*resolution
+    sitting_min_time = 15*60*resolution
+    sitting_max_time = 45*60*resolution
 
     avarage_time_steps_between_entering = 1/(1*resolution)
 
     chance_of_being_infected = 0.01
 
-    input_map_path = Path(__file__).parent.parent / "data" / "test-map-2.txt"
+    input_map_path = Path(__file__).parent.parent / "data" / "chalmers_karresturang_normal.txt"
     output_video_path = Path(__file__).parent.parent / "run-animation.mp4"
 
     environment = load_environment(str(input_map_path), resolution)
@@ -95,7 +97,7 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolu
 
     def update_agents(_frame):
 
-        print(_frame)
+        #print(_frame)
 
         particle_map = infection_spread.particleMatrix
 
@@ -174,11 +176,41 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolu
         return circles, particle_overlay, ax2, ax3
 
     if not animate:
-        for i in range(40000):
-            update_agents(i)
+        if True: # Test different infection rates on same map
+            chance_of_being_infected = 0.00
+            print("# chance_of_being_infected; ","risk_density_arriving_list_sum; ", "risk_density_sitting_list_sum; ", "risk_density_leaving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_leaving_list_sum")
+            for p in range(20):
+
+                chance_of_being_infected += 0.01
+
+                accumulated_risk_list = []
+                risk_list_of_list = []
+                risk_density_arriving_list = []
+                risk_density_sitting_list = []
+                risk_density_leaving_list = []
+
+                risk_density_arriving_list_sum = []
+                risk_density_sitting_list_sum = []
+                risk_density_leaving_list_sum = []
+
+                for agent in agents:
+                    agent.reset()
+                    
+                for i in range(10000):
+                    update_agents(i)
+
+                risk_density_arriving_list_sum = sum_of_list_in_list(risk_density_arriving_list.copy())
+                risk_density_sitting_list_sum = sum_of_list_in_list(risk_density_sitting_list.copy())
+                risk_density_leaving_list_sum = sum_of_list_in_list(risk_density_leaving_list.copy())
+
+                print(round(chance_of_being_infected, 2),";",round(statistics.median(risk_density_arriving_list_sum), 2),";", round(statistics.median(risk_density_sitting_list_sum), 2),";", round(statistics.median(risk_density_leaving_list_sum), 2),";", round(statistics.mean(risk_density_arriving_list_sum), 2),";", round(statistics.mean(risk_density_sitting_list_sum), 2),";", round(statistics.mean(risk_density_leaving_list_sum), 2))
+        else: # Test one infection rate (good if using do_data_analys)
+            for i in range(10000):
+                update_agents(i)
+
 
     elif save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=1, frames=2500, repeat=False)
+        animation = FuncAnimation(fig, update_agents, interval=1, frames=5000, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)
