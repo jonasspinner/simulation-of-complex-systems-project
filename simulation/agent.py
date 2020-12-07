@@ -17,7 +17,7 @@ class Agent:
                  state=AgentState.OUTSIDE,
                  time_spent_eating=300,
                  infected=False,
-                 accumulated_droplets=0.0):
+                 accumulated_risk=0.0):
         if path_in is None:
             path_in = []
         if path_out is None:
@@ -27,8 +27,9 @@ class Agent:
         self.infected = infected
         self.path_in = path_in  # to food + seat
         self.path_out = path_out
-        self.accumulated_droplets = accumulated_droplets
-        self.droplets_list = []
+        self.risk_density_complete = []
+        self.accumulated_risk = accumulated_risk
+        self.accumulated_risk_list = []
         self.risk_density_arriving = []
         self.risk_density_sitting = []
         self.risk_density_leaving = []
@@ -66,6 +67,10 @@ class Agent:
         self.time_spent_in_restaurant += 1
 
     def add_risk_density(self, risk_density) -> None:
+        self.risk_density_complete.append(risk_density)
+        self.accumulated_risk += risk_density
+        self.accumulated_risk_list.append(self.accumulated_risk)
+
         if self.state == AgentState.ARRIVING:
             self.risk_density_arriving.append(risk_density)
 
