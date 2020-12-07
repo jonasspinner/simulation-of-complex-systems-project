@@ -19,7 +19,7 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolu
     sitting_min_time = 30*60*resolution
     sitting_max_time = 30*60*resolution
 
-    avarage_time_steps_between_entering = 5*resolution
+    avarage_time_steps_between_entering = 1/(1*resolution)
 
     chance_of_being_infected = 0.01
 
@@ -107,13 +107,13 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = True, resolu
                 agent.time_spent_eating = random.randint(sitting_min_time, sitting_max_time)
 
                 if agents.index(agent) == 0:
-                    circle.set_ec('y')
-                    circle.set_fc('y')
+                    circle.set_ec('b')
+                    circle.set_fc('b')
                 
                 if np.random.random() < chance_of_being_infected:
                     agent.infected = True
                     circle.set_ec('r')
-                    circle.set_fc('g')
+                    circle.set_fc('k')
 
             if agent.state != AgentState.OUTSIDE:
 
