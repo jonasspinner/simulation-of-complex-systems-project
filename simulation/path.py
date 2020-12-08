@@ -77,7 +77,7 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
     return graph
 
 
-def find_path(graph: nx.DiGraph, start: Pos, end: Pos, use_random_deviations: bool = True) -> List[Pos]:
+def find_path(graph: nx.DiGraph, start: Pos, end: Pos, random_deviation: float = 0.3) -> List[Pos]:
     """
 
     Parameters
@@ -85,19 +85,17 @@ def find_path(graph: nx.DiGraph, start: Pos, end: Pos, use_random_deviations: bo
     graph : nx.DiGraph
     start : Pos
     end : Pos
-    use_random_deviations : bool
-        If enabled, draw values from a normal distribution for each position. The absolute difference between the values
-        are factored into the edge cost. This results in more random looking graphs.
+    random_deviation : float
+        If non-zero, draw values from a normal distribution for each position. The absolute difference between the
+        values are factored into the edge cost. This results in more random looking graphs.
     """
-    node_values = {u: np.random.normal() for u in graph.nodes}
+    node_values = {u: np.random.normal(scale=random_deviation) for u in graph.nodes}
 
     def cost_with_deviation(u: Pos, v: Pos, d: Mapping[Any, Any]) -> float:
         return d["cost"] * (1 + np.abs(node_values[u] - node_values[v]))
 
-    weight = cost_with_deviation if use_random_deviations else "cost"
-
     # noinspection PyTypeChecker
-    return nx.astar_path(graph, start, end, heuristic=distance, weight=weight)
+    return nx.astar_path(graph, start, end, heuristic=distance, weight=cost_with_deviation)
 
 
 def plot_path(environment: np.ndarray, path: Optional[List[Pos]] = None) -> None:
