@@ -1,42 +1,43 @@
-import numpy as np
+from itertools import product
 
-    
-def getDistances(visibilityMatrix : np.ndarray, environment : np.ndarray) -> np.ndarray:
+import numpy as np
+from numpy.linalg import norm
+
+from loader import TileType
+
+
+def getDistances(visibility_matrix: np.ndarray, environment: np.ndarray) -> np.ndarray:
     """
     Parameters
     ----------
-    visibilityMatrix
+    visibility_matrix
         Holds all visibility maps corresponding to each positions in the environment
     environment
         Used for finding non zero element when initializing distanceMatrix
 
     Returns
     -------
-    distanceMatrix : np.ndarray
-        distanceMatrix describes the distance to all states in a radius of 2m 
-        (this depends on visibilityMatrix) from a given state.  
-    """ 
-    
+    distances : np.ndarray
+        distances describes the distance to all states in a radius of 2m
+        (this depends on visibility_matrix) from a given state.
+    """
+
     # Look for a state in environment which is not a wall since those states in visibilityMatrix are empty
-    found = False
-    while found == False:
-        for j in range(5,np.shape(environment)[0]):
-            for i in range(5,np.shape(environment)[1]): 
-                if environment[j,i] != 0:
-                    distanceMatrix = np.full(np.shape(visibilityMatrix[int(j),int(i)]), 1, dtype=float)
-                    found = True
-      
-    # Calculate distances from the middle position of the matrix    
-    middlePos = [int(np.floor(np.shape(distanceMatrix)[0]/2)), int(np.floor(np.shape(distanceMatrix)[0]/2))]
-    iCols = np.linspace(0,np.shape(distanceMatrix)[0]-1,np.shape(distanceMatrix)[0])
-    iRows = np.linspace(0,np.shape(distanceMatrix)[1]-1,np.shape(distanceMatrix)[1])
-    
-    for j in iCols:
-        for i in iRows:    
-            if int(j) == middlePos[0] and int(i) == middlePos[1]:
-                distanceMatrix[int(j),int(i)] = 0.5
-            else:
-                distanceMatrix[int(j),int(i)] = np.sqrt( (j-middlePos[0])**2 + (i-middlePos[1])**2 )
-            
-    return distanceMatrix
-         
+    non_empty_pos = next(zip(*np.where(environment != TileType.WALL & environment != TileType.TABLE)))
+
+    local_width, local_height = visibility_matrix[non_empty_pos].shape
+    assert(local_width > 0)
+    assert(local_height > 0)
+
+    distances = np.full((local_width, local_height), 1, dtype=float)
+
+    # Calculate distances from the middle position of the matrix
+    local_mid = (local_width // 2, local_height // 2)
+
+    for local_pos in product(range(local_width), range(local_height)):
+        if local_pos == local_mid:
+            distances[local_pos] = 0.5
+        else:
+            distances[local_pos] = norm(np.array(local_pos) - np.array(local_mid))
+
+    return distances
