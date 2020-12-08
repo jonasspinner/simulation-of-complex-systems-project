@@ -36,22 +36,15 @@ TILE_MAP: Mapping[str, TileType] = {
 }
 
 
-def load_environment(file_name: str, resolution: int) -> np.ndarray:
+def _load_rectangle_map_string_rows(file_path: str) -> Tuple[List[str], int, int]:
     """
-    Positions in for the environment are (x, y). The position (0, 0) is the top left position and (width-1, height-1) is
-    the lower right position.
+    Loads rows from a file. Raises an error if the map is not rectangular.
 
     Parameters
     ----------
-    file_name : str
-    resolution : int
-        This decides how many squares each thing from the text file will be in the matrix
-
-    Returns
-    -------
-    matrix : np.ndarray
+    file_path : str
     """
-    with open(file_name) as file:
+    with open(file_path) as file:
         rows = [line.strip() for line in file]
 
     height, width = len(rows), max(len(row) for row in rows)
@@ -60,6 +53,26 @@ def load_environment(file_name: str, resolution: int) -> np.ndarray:
         line_messages = [f"Line {i} ({len(row)} != {width}) \"{row}\""
                          for i, row in enumerate(rows) if len(row) != width]
         raise RuntimeError(f"Every row should have the same size. {' '.join(line_messages)}.")
+
+    return rows, width, height
+
+
+def load_environment(file_path: str, resolution: int) -> np.ndarray:
+    """
+    Positions in for the environment are (x, y). The position (0, 0) is the top left position and (width-1, height-1) is
+    the lower right position.
+
+    Parameters
+    ----------
+    file_path : str
+    resolution : int
+        This decides how many squares each thing from the text file will be in the matrix
+
+    Returns
+    -------
+    matrix : np.ndarray
+    """
+    rows, width, height = _load_rectangle_map_string_rows(file_path)
 
     matrix = np.zeros((width * resolution, height * resolution), dtype=int)
 
@@ -71,6 +84,21 @@ def load_environment(file_name: str, resolution: int) -> np.ndarray:
             if character in TILE_MAP:
                 tile_type = TILE_MAP[character]
                 matrix[x:x + resolution, y:y + resolution] = tile_type
+
+    return matrix
+
+
+def load_ventilation(file_path: str, resolution: int) -> np.ndarray:
+    rows, width, height = _load_rectangle_map_string_rows(file_path)
+
+    matrix = np.zeros((width * resolution, height * resolution), dtype=float)
+
+    for i, cols in enumerate(rows):
+        for j, value in enumerate(cols):
+            x = j * resolution
+            y = i * resolution
+
+            matrix[x:x + resolution, y:y + resolution] = float(value)
 
     return matrix
 
