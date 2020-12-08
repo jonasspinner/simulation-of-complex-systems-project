@@ -1,0 +1,35 @@
+XXXXXXXXXXXXXXXXXXXXXXXFXXXXXXXXXXXXXXX
+X                ..................   X
+X                ..................   X
+X                .......          X   X
+X                .                X   X
+XCC  CC  CC  CC  .  CC  CC  CC  CCX   X
+XTT  TT  TT  TT  .  TT  TT  TT  TTX   X
+XCC  CC  CC  CC  .  CC  CC  CC  CCX   X
+X                .                X   X
+X                .                X   X
+XCC  CC  CC  CC  .  CC  CC  CC  CCX   X
+XTT  TT  TT  TT  .  TT  TT  TT  TTX   X
+XCC  CC  CC  CC  .  CC  CC  CC  CCX   X
+X                .                X   X
+X                .                X   X
+XCC  CC  CC  CC  .  CC  CC  CC  CCX   X
+XTT  TT  TT  TT  .  TT  TT  TT  TTX   X
+XCC  CC  CC  CC  .  CC  CC  CC  CCX   X
+X                .                X   X
+X                .                X   X
+XCC  CC  CC  CC  .  CC  CC  CC  CCX   X
+XTT  TT  TT  TT  .  TT  TT  TT  TTX   X
+XCC  CC  CC  CC  .  CC  CC  CC  CCX   X
+X                .                X   X
+X                .                XAAAX
+XCTC  CTC  CTC   .................>   E
+X                .................>   E
+X                                 XXXXX
+XCTC  CTC  CTC  CTC  CTC  CTC  CTCXXXXX
+XCTC  CTC  CTC  CTC  CTC  CTC  CTCXXXXX
+X                                 XXXXX
+X                                 XXXXX
+XCTC  CTC  CTC  CTC  CTC  CTC  CTCXXXXX
+XCTC  CTC  CTC  CTC  CTC  CTC  CTCXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

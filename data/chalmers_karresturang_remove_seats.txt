@@ -1,35 +1,35 @@
 XXXXXXXXXXXXXXXXXXXXXXXFXXXXXXXXXXXXXX
-X         ..............             X
-X         ..............             X
-X         ..............         X   X
-X         .            .         X   X
-XC C C C  .        C   .  C C C CX   X
-XTTTTTTTT .   C    TTC . TTTTTTTTX   X
-X C C C C . CTT   CTT  . C C C C X   X
-XC C C C  .  TTC    C  .  C C C CX   X
-XTTTTTTTT .  C         . TTTTTTTTX   X
-X C C C C .        C   . C C C C X   X
-XC C C C  .   C    TTC .  C C C CX   X
-XTTTTTTTT . CTT   CTT  . TTTTTTTTX   X
-X C C C C .  TTC    C  . C C C C X   X
-XC C C C  .  C         .  C C C CX   X
-XTTTTTTTT .        C   . TTTTTTTTX   X
-X C C C C .   C    TTC . C C C C X   X
-XC C C C  . CTT   CTT  .  C C C CX   X
-XTTTTTTTT .  TTC    C  . TTTTTTTTX   X
-X C C C C .  C         . C C C C X   X
-XC C C C  .        C   .  C C C CX   X
-XTTTTTTTT .   C    TTC . TTTTTTTTX   X
-X C C C C . CTT   CTT  . C C C C X   X
-XC C C C  .  TTC    C  .         XAAAX
-XTTTTTTTT .  C         ..        X   E
-X C C C C .......................>   E
-X ...............................>   X
-X                                 XXXX
-X TC TC TC TC TC TC TC TC TC TC TCXXXX
-XCT CT CT CT CT CT CT CT CT CT CT XXXX
-X TC TC TC TC TC TC TC TC TC TC TCXXXX
-XCT CT CT CT CT CT CT CT CT CT CT XXXX
-X TC TC TC TC TC TC TC TC TC TC TCXXXX
-XCT CT CT CT CT CT CT CT CT CT CT XXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+X         .........................   X
+X         .........................   X
+X         ..............          X   X
+X         .            .          X   X
+XC C C C  .        C   .  C C C C X   X
+XTTTTTTTT .   C    TTC . TTTTTTTTTX   X
+X C C C C . CTT   CTT  . C C C C CX   X
+XC C C C  .  TTC    C  .  C C C C X   X
+XTTTTTTTT .  C         . TTTTTTTTTX   X
+X C C C C .        C   . C C C C CX   X
+XC C C C  .   C    TTC .  C C C C X   X
+XTTTTTTTT . CTT   CTT  . TTTTTTTTTX   X
+X C C C C .  TTC    C  . C C C C CX   X
+XC C C C  .  C         .  C C C C X   X
+XTTTTTTTT .        C   . TTTTTTTTTX   X
+X C C C C .   C    TTC . C C C C CX   X
+XC C C C  . CTT   CTT  .  C C C C X   X
+XTTTTTTTT .  TTC    C  . TTTTTTTTTX   X
+X C C C C .  C         . C C C C CX   X
+XC C C C  .        C   .  C C C C X   X
+XTTTTTTTT .   C    TTC . TTTTTTTTTX   X
+X C C C C . CTT   CTT  . C C C C CX   X
+XC C C C  .  TTC    C  .          X   X
+XTTTTTTTT .  C         ..         XAAAX
+X C C C C ........................>   E
+X ................................>   E
+X                                 XXXXX
+X TC TC TC TC TC TC TC TC TC TC TCXXXXX
+XCT CT CT CT CT CT CT CT CT CT CT XXXXX
+X TC TC TC TC TC TC TC TC TC TC TCXXXXX
+XCT CT CT CT CT CT CT CT CT CT CT XXXXX
+X TC TC TC TC TC TC TC TC TC TC TCXXXXX
+XCT CT CT CT CT CT CT CT CT CT CT XXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

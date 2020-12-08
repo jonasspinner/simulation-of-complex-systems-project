@@ -21,10 +21,10 @@ XCCCCCCCC .  CC        . CCCCCCCCCX   X
 XCCCCCCCC .        CC  . CCCCCCCCCX   X
 XTTTTTTTT .  CC   CTTC . TTTTTTTTTX   X
 XCCCCCCCC . CTTC  CTTC . CCCCCCCCCX   X
-XCCCCCCCC . CTTC   CC  .          XAAAX
-XTTTTTTTT .  CC        ..         X   E
+XCCCCCCCC . CTTC   CC  .          X   X
+XTTTTTTTT .  CC        ..         XAAAX
 XCCCCCCCC ........................>   E
-X ................................>   X
+X ................................>   E
 X                                 XXXXX
 XCTCCTCCTCCTCCTCCTCCTCCTCCTCCTCCTCXXXXX
 XCTCCTCCTCCTCCTCCTCCTCCTCCTCCTCCTCXXXXX
