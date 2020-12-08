@@ -1,12 +1,14 @@
 from itertools import product
-from typing import Optional, List
+from typing import Optional, List, Mapping, Any
 
 import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 
-from simulation.loader import TileType, Pos, Mapping
+from simulation.loader import TileType, Pos
+
+__all__ = ["building_cmap", "distance", "build_graph", "find_path", "plot_path"]
 
 building_cmap = ListedColormap([
     [0.4, 0.4, 0.4, 1],  # wall
@@ -75,9 +77,27 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
     return graph
 
 
-def find_path(graph: nx.DiGraph, start: Pos, end: Pos) -> List[Pos]:
+def find_path(graph: nx.DiGraph, start: Pos, end: Pos, use_random_deviations: bool = True) -> List[Pos]:
+    """
+
+    Parameters
+    ----------
+    graph : nx.DiGraph
+    start : Pos
+    end : Pos
+    use_random_deviations : bool
+        If enabled, draw values from a normal distribution for each position. The absolute difference between the values
+        are factored into the edge cost. This results in more random looking graphs.
+    """
+    node_values = {u: np.random.normal() for u in graph.nodes}
+
+    def cost_with_deviation(u: Pos, v: Pos, d: Mapping[Any, Any]) -> float:
+        return d["cost"] * (1 + np.abs(node_values[u] - node_values[v]))
+
+    weight = cost_with_deviation if use_random_deviations else "cost"
+
     # noinspection PyTypeChecker
-    return nx.astar_path(graph, start, end, heuristic=distance, weight="cost")
+    return nx.astar_path(graph, start, end, heuristic=distance, weight=weight)
 
 
 def plot_path(environment: np.ndarray, path: Optional[List[Pos]] = None) -> None:
