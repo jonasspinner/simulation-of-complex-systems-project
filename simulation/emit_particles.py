@@ -97,7 +97,7 @@ def getDirectedSpread(visibility_matrix: np.ndarray, environment: np.ndarray, re
         
     radius = 4*resolution
     radii = np.linspace(0, radius, 30)
-    thetas = np.linspace(-np.pi/2, 3*np.pi/2, 50)
+    thetas = np.linspace(-np.pi, 0, 40)
     cone = np.zeros((radius*2 + 1, radius*2 + 1), dtype=float)
     
     for theta in thetas:
@@ -107,16 +107,29 @@ def getDirectedSpread(visibility_matrix: np.ndarray, environment: np.ndarray, re
                 local_y = radius
 
                 # 0.5 since radius does not take in account that indexing starts at 0
+                
                 dx = int(0.5 + np.cos(theta) * rad)
-                dy = int(0.5 + np.sin(theta) * rad)
+                dy = int(np.floor(0.5 + np.sin(theta) * rad)) # np.floor since int() rounds up negative numbers
                 assert(-radius <= dx <= radius)
                 assert(-radius <= dy <= radius)
 
-                if int(cone[local_x + dx, local_y + dy]) == 0:
-                    if np.cos(theta) < 0:
+                if cone[local_x + dx, local_y + dy] < 0.01:
+                    if np.cos(theta) < -0.75:
                         cone[local_x + dx, local_y + dy] = 0.1
                     else:    
-                        cone[local_x + dx, local_y + dy] = 5/8 + (3/8 * np.cos(theta))
+                        cone[local_x + dx - 1, local_y + dy] = 5/8 + (3/8 * np.cos(theta))
+                        
+                dx = int(0.5 + np.cos(-theta) * rad)
+                dy = int(0.5 + np.sin(-theta) * rad)
+                assert(-radius <= dx <= radius)
+                assert(-radius <= dy <= radius)
+                
+                if cone[local_x + dx, local_y + dy] < 0.01:
+                    if np.cos(-theta) < -0.75:
+                        cone[local_x + dx, local_y + dy] = 0.1
+                    else:    
+                        cone[local_x + dx - 1, local_y + dy] = 5/8 + (3/8 * np.cos(-theta))
+    
     
     cones = np.zeros((1, 4), dtype=object)
     cones[0,0] = cone

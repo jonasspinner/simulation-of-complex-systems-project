@@ -16,7 +16,7 @@ from visibility import getVisibilityMaps
 from data_analysis import data_analysis, sum_of_list_in_list
 
 
-def main(save_file_to_disk=True, animate = True, do_data_analys = True, resolution=2):
+def main(save_file_to_disk=True, animate = True, do_data_analys = True, resolution=1):
 
     sitting_min_time = 15*60*resolution
     sitting_max_time = 45*60*resolution
@@ -65,9 +65,9 @@ def main(save_file_to_disk=True, animate = True, do_data_analys = True, resoluti
     ax1.axis('off')
     ax1.imshow(environment.T, cmap=building_cmap)
 
-    # visibilityMatrix = getVisibilityMaps(environment, resolution)
+    visibilityMatrix = getVisibilityMaps(environment, resolution, screen = False)
     # np.save('visibilityMatrix_karrestaurang_res_2.npy', visibilityMatrix)
-    visibilityMatrix = np.load('visibilityMatrix_karrestaurang_res_2.npy', allow_pickle=True)
+    # visibilityMatrix = np.load('visibilityMatrix_karrestaurang_res_2.npy', allow_pickle=True)
     distanceMatrix = getDistances(visibilityMatrix, environment)
     cones = getDirectedSpread(visibilityMatrix, environment, resolution)
 
@@ -213,7 +213,7 @@ def main(save_file_to_disk=True, animate = True, do_data_analys = True, resoluti
 
 
     elif save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=1, frames=1500, repeat=False)
+        animation = FuncAnimation(fig, update_agents, interval=1, frames=500, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)

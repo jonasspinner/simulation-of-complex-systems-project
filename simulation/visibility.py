@@ -2,7 +2,7 @@ import numpy as np
 from simulation.loader import TileType
 
 
-def getVisibilityMaps(environment: np.ndarray, resolution: int) -> np.ndarray:
+def getVisibilityMaps(environment: np.ndarray, resolution: int, screen: bool) -> np.ndarray:
     """
     Parameters
     ----------
@@ -12,7 +12,8 @@ def getVisibilityMaps(environment: np.ndarray, resolution: int) -> np.ndarray:
         Use this for scale, i.e if we decide that one original square is 50x50 cm,
         then one square in the environment is 50/res x 50/res cm. Need this for 
         the radius of particle emission.
-
+    screen : boolean
+        if true, particles is not spread over tables (tables is then seen as screens)
     Returns
     -------
     matrix : np.ndarray
@@ -48,7 +49,8 @@ def getVisibilityMaps(environment: np.ndarray, resolution: int) -> np.ndarray:
 
                 tile_type = environment[col + dx, row + dy]
 
-                if tile_type == TileType.WALL: # or tile_type == TileType.TABLE:
+                
+                if tile_type == TileType.WALL or (tile_type == TileType.TABLE and screen == True):
                     visibility_from_pos[local_x + dx, local_y + dy] = 0
                     break
                 else:

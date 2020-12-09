@@ -60,14 +60,22 @@ class particle_spread:
             
             tile_type = self.environment[xPos, yPos]
             if tile_type == TileType.SEAT:
-                if self.environment[xPos + 1, yPos] == TileType.TABLE or self.environment[xPos + 2, yPos] == TileType.TABLE:
-                    emission = np.multiply(emission,cones[0,0])
-                elif self.environment[xPos, yPos + 1] == TileType.TABLE or self.environment[xPos, yPos + 2] == TileType.TABLE:
-                    emission = np.multiply(emission,cones[0,1])
-                elif self.environment[xPos - 1, yPos] == TileType.TABLE or self.environment[xPos - 2, yPos] == TileType.TABLE:
-                    emission = np.multiply(emission,cones[0,2])
-                elif self.environment[xPos, yPos - 1] == TileType.TABLE or self.environment[xPos, yPos - 2] == TileType.TABLE:
-                    emission = np.multiply(emission,cones[0,3])
+                step = 0
+                while tile_type == TileType.SEAT:
+                    step = step + 1
+               
+                    if self.environment[xPos + step, yPos] == TileType.TABLE: 
+                        emission = np.multiply(emission,cones[0,0])
+                        tile_type = TileType.TABLE
+                    elif self.environment[xPos, yPos + step] == TileType.TABLE: 
+                        emission = np.multiply(emission,cones[0,1])
+                        tile_type = TileType.TABLE
+                    elif self.environment[xPos - step, yPos] == TileType.TABLE:
+                        emission = np.multiply(emission,cones[0,2])
+                        tile_type = TileType.TABLE
+                    elif self.environment[xPos, yPos - step] == TileType.TABLE:
+                        emission = np.multiply(emission,cones[0,3])
+                        tile_type = TileType.TABLE
             
             # Condition such that range is not outside of enviromental map (same dimensions as particle matrix) 
             # Look left
