@@ -8,15 +8,15 @@ import statistics
 
 
 from agent import Agent, AgentState
-from emit_particles import getDistances
-from loader import load_environment, TileType, select_tiles
+from simulation.emit_particles import getDistances, getDirectedSpread
+from simulation.loader import load_environment, TileType, select_tiles
 from particle_spread import particle_spread
-from path import find_path, build_graph, building_cmap
+from simulation.path import find_path, build_graph, building_cmap
 from visibility import getVisibilityMaps
 from data_analysis import data_analysis, sum_of_list_in_list
 
 
-def main(save_file_to_disk=False, animate = False, do_data_analys = False, resolution=1):
+def main(save_file_to_disk=True, animate = True, do_data_analys = True, resolution=2):
 
     sitting_min_time = 15*60*resolution
     sitting_max_time = 45*60*resolution
@@ -65,16 +65,19 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = False, resol
     ax1.axis('off')
     ax1.imshow(environment.T, cmap=building_cmap)
 
-    visibilityMatrix = getVisibilityMaps(environment, resolution)
+    # visibilityMatrix = getVisibilityMaps(environment, resolution)
+    # np.save('visibilityMatrix_karrestaurang_res_2.npy', visibilityMatrix)
+    visibilityMatrix = np.load('visibilityMatrix_karrestaurang_res_2.npy', allow_pickle=True)
     distanceMatrix = getDistances(visibilityMatrix, environment)
+    cones = getDirectedSpread(visibilityMatrix, environment, resolution)
 
     particle_map = np.zeros((width, height))
-    infection_spread = particle_spread(resolution=1,
+    infection_spread = particle_spread(resolution=resolution,
                                        environment=environment,
                                        visibilityMatrix=visibilityMatrix,
                                        particleMatrix=particle_map,
                                        distanceMatrix=distanceMatrix,
-                                       emissionRate=2.5)
+                                       emissionRate=3)
 
     particle_overlay = ax1.imshow(particle_map.T, alpha=0.5, cmap='Reds', vmin=0.0, vmax=25.0)
 
@@ -170,7 +173,7 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = False, resol
                            
 
         # infection_spread = GaussianSpread(infectionMap=particle_map, resolution=resolution)
-        particle_map = infection_spread.emit(infected_pos_list)
+        particle_map = infection_spread.emit(infected_pos_list, agent.state, cones)
         particle_overlay.set_data(particle_map.T)
 
         return circles, particle_overlay, ax2, ax3
@@ -210,7 +213,7 @@ def main(save_file_to_disk=False, animate = False, do_data_analys = False, resol
 
 
     elif save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=1, frames=5000, repeat=False)
+        animation = FuncAnimation(fig, update_agents, interval=1, frames=1500, repeat=False)
         animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
     else:
         animation = FuncAnimation(fig, update_agents, interval=10)

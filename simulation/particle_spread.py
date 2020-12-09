@@ -1,4 +1,5 @@
 import numpy as np
+from simulation.loader import TileType
 
 class particle_spread:
     def __init__(self,
@@ -17,7 +18,7 @@ class particle_spread:
         self.emissionRate = emissionRate
 
 
-    def emit(self, posInfectedlist)  -> np.ndarray:
+    def emit(self, posInfectedlist, agent_state, cones)  -> np.ndarray:
         """
         Parameters
         ----------
@@ -33,13 +34,19 @@ class particle_spread:
             The current agents position coordinates
         emissionRate : float
             describes how contaigious the current agent is
+            
+            
+        agent_state : state
+            if this is seat, then use cones for vision
+        cones : matrix 3D
+            contains 4 cone matrices for modifying the vision 
     
         Returns
         -------
         particleMatrix : np.ndarray
             particleMatrix describes the amount of particles in every position of the map.
         """           
-        self.particleMatrix = self.particleMatrix*0.99
+        self.particleMatrix = self.particleMatrix*0.9
         
         for pos in posInfectedlist:
             emission = self.emissionRate * 1/self.distanceMatrix
@@ -50,6 +57,17 @@ class particle_spread:
             visibilityMap = self.visibilityMatrix[xPos,yPos]
             # visibilityMap has 0 for non visible states, i.e no emission. 
             emission = np.where(visibilityMap != 0, emission, 0)
+            
+            tile_type = self.environment[xPos, yPos]
+            if tile_type == TileType.SEAT:
+                if self.environment[xPos + 1, yPos] == TileType.TABLE or self.environment[xPos + 2, yPos] == TileType.TABLE:
+                    emission = np.multiply(emission,cones[0,0])
+                elif self.environment[xPos, yPos + 1] == TileType.TABLE or self.environment[xPos, yPos + 2] == TileType.TABLE:
+                    emission = np.multiply(emission,cones[0,1])
+                elif self.environment[xPos - 1, yPos] == TileType.TABLE or self.environment[xPos - 2, yPos] == TileType.TABLE:
+                    emission = np.multiply(emission,cones[0,2])
+                elif self.environment[xPos, yPos - 1] == TileType.TABLE or self.environment[xPos, yPos - 2] == TileType.TABLE:
+                    emission = np.multiply(emission,cones[0,3])
             
             # Condition such that range is not outside of enviromental map (same dimensions as particle matrix) 
             # Look left
@@ -83,5 +101,6 @@ class particle_spread:
                 
             # Takes care of cases where emission matrix gets outside of particleMatrix
             self.particleMatrix[(1 + xPos - rangeColMin):(1 + xPos + rangeColMax),(1 + yPos - rangeRowMin):(1 + yPos + rangeRowMax)] = self.particleMatrix[(1 + xPos - rangeColMin):(1 + xPos + rangeColMax),(1 + yPos - rangeRowMin):(1 + yPos + rangeRowMax)] + emission[(int(np.ceil(np.shape(emission)[0]/2)) - rangeColMin):(int(np.ceil(np.shape(emission)[0]/2)) + rangeColMax),(int(np.ceil(np.shape(emission)[1]/2)) - rangeRowMin):(int(np.ceil(np.shape(emission)[1]/2)) + rangeRowMax)]
+            self.particleMatrix[self.particleMatrix > 250] = 250
         return self.particleMatrix
     

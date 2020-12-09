@@ -1,5 +1,5 @@
 import numpy as np
-from loader import TileType
+from simulation.loader import TileType
 
 
 def getVisibilityMaps(environment: np.ndarray, resolution: int) -> np.ndarray:
@@ -25,7 +25,7 @@ def getVisibilityMaps(environment: np.ndarray, resolution: int) -> np.ndarray:
     def calculate_local_visibility(col: int, row: int) -> np.ndarray:
         # how much is two meters? Assuming 1 (original) square in original map is 50 cm. 
         radius = 4*resolution 
-        radii = np.linspace(0, radius/1.25, 30)
+        radii = np.linspace(0, radius, 30)
         thetas = np.linspace(0, 2*np.pi, 50)
         visibility_from_pos = 2 + np.zeros((radius*2 + 1, radius*2 + 1), dtype=int)
         
@@ -35,7 +35,7 @@ def getVisibilityMaps(environment: np.ndarray, resolution: int) -> np.ndarray:
                 local_x = radius
                 local_y = radius
 
-                # -0.5 since radius does not take in account that indexing starts at 0
+                # 0.5 since radius does not take in account that indexing starts at 0
                 dx = int(0.5 + np.cos(theta) * rad)
                 dy = int(0.5 + np.sin(theta) * rad)
                 assert(-radius <= dx <= radius)
@@ -48,7 +48,7 @@ def getVisibilityMaps(environment: np.ndarray, resolution: int) -> np.ndarray:
 
                 tile_type = environment[col + dx, row + dy]
 
-                if tile_type == TileType.WALL or tile_type == TileType.TABLE:
+                if tile_type == TileType.WALL: # or tile_type == TileType.TABLE:
                     visibility_from_pos[local_x + dx, local_y + dy] = 0
                     break
                 else:
