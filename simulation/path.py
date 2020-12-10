@@ -59,7 +59,7 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
         if environment[u] == TileType.WALL or environment[v] == TileType.WALL:
             value = np.inf
         if environment[v] == TileType.SEAT:
-            value += 2.0
+            value *= 2.0
         if environment[u] == TileType.WALKING_PATH and environment[v] == TileType.WALKING_PATH:
             value *= 0.5
         return value
@@ -77,7 +77,7 @@ def build_graph(environment: np.ndarray) -> nx.DiGraph:
     return graph
 
 
-def find_path(graph: nx.DiGraph, start: Pos, end: Pos, random_deviation: float = 0.3) -> List[Pos]:
+def find_path(graph: nx.DiGraph, start: Pos, end: Pos, random_deviation: float = 0.6) -> List[Pos]:
     """
 
     Parameters
@@ -89,7 +89,7 @@ def find_path(graph: nx.DiGraph, start: Pos, end: Pos, random_deviation: float =
         If non-zero, draw values from a normal distribution for each position. The absolute difference between the
         values are factored into the edge cost. This results in more random looking graphs.
     """
-    node_values = {u: np.random.normal(scale=random_deviation) for u in graph.nodes}
+    node_values = {u: np.random.uniform(low=0, high=random_deviation) for u in graph.nodes}
 
     def cost_with_deviation(u: Pos, v: Pos, d: Mapping[Any, Any]) -> float:
         return d["cost"] * (1 + np.abs(node_values[u] - node_values[v]))
