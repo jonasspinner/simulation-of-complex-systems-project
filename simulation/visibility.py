@@ -27,7 +27,7 @@ def getVisibilityMaps(environment: np.ndarray, resolution: int, screen: bool) ->
         # how much is two meters? Assuming 1 (original) square in original map is 50 cm. 
         radius = 4*resolution 
         radii = np.linspace(0, radius, 30)
-        thetas = np.linspace(0, 2*np.pi, 50)
+        thetas = np.linspace(0, 2*np.pi, 75)
         visibility_from_pos = 2 + np.zeros((radius*2 + 1, radius*2 + 1), dtype=int)
         
         for theta in thetas:
