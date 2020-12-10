@@ -133,12 +133,8 @@ def getDirectedSpread(visibility_matrix: np.ndarray, environment: np.ndarray, re
     
     cones = np.zeros((1, 4), dtype=object)
     cones[0,0] = cone
-    print(cones[0,0])
     cones[0,1] = np.rot90(cone)
-    print(cones[0,1])
     cones[0,2] = np.rot90(cone,2)
-    print(cones[0,2])
     cones[0,3] = np.rot90(cone,3)
-    print(cones[0,3])
     return cones
     
