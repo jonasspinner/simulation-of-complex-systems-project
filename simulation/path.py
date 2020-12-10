@@ -1,28 +1,12 @@
 from itertools import product
-from typing import Optional, List, Mapping, Any
+from typing import List, Mapping, Any
 
 import networkx as nx
 import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib.colors import ListedColormap
 
 from simulation.loader import TileType, Pos
 
-__all__ = ["building_cmap", "distance", "build_graph", "find_path", "plot_path"]
-
-building_cmap = ListedColormap([
-    [0.4, 0.4, 0.4, 1],  # wall
-    [1, 1, 1, 1],  # floor
-    [1, 0, 0, 1],  # seat
-    [0, 1, 0, 1],  # entry
-    [0, 0, 1, 1],  # food
-    [1, 0, 1, 1],  # up
-    [1, 0, 1, 1],  # right
-    [1, 0, 1, 1],  # down
-    [1, 0, 1, 1],  # left
-    [0.6, 0.6, 0.6, 1],  # table
-    [0.9, 0.9, 0.9, 1],  # walking path
-])
+__all__ = ["distance", "build_graph", "find_path"]
 
 
 def distance(u: Pos, v: Pos) -> float:
@@ -96,11 +80,3 @@ def find_path(graph: nx.DiGraph, start: Pos, end: Pos, random_deviation: float =
 
     # noinspection PyTypeChecker
     return nx.astar_path(graph, start, end, heuristic=distance, weight=cost_with_deviation)
-
-
-def plot_path(environment: np.ndarray, path: Optional[List[Pos]] = None) -> None:
-    plt.imshow(environment.T, cmap=building_cmap)
-    if path is not None:
-        xs, ys = zip(*path)
-        plt.plot(xs, ys, "k-")
-    plt.show()

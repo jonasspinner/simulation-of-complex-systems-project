@@ -1,3 +1,6 @@
+# Pickled data
+*.npy
+
 # Results folder
 results/
 
