@@ -3,12 +3,12 @@ from simulation.loader import TileType
 
 class particle_spread:
     def __init__(self,
-                 resolution=1,
-                 environment = np.zeros((1, 1)),
-                 visibilityMatrix = np.zeros((1, 1)),
-                 particleMatrix = np.zeros((1, 1)),
-                 distanceMatrix = np.zeros((1, 1)),
-                 emissionRate = float):
+                 resolution,
+                 environment,
+                 visibilityMatrix,
+                 particleMatrix,
+                 distanceMatrix,
+                 emissionRate: float):
         
         self.resolution = resolution
         self.environment = environment
@@ -46,10 +46,14 @@ class particle_spread:
         particleMatrix : np.ndarray
             particleMatrix describes the amount of particles in every position of the map.
         """           
-        self.particleMatrix = self.particleMatrix*0.9
+        self.particleMatrix = self.particleMatrix*0.985
         
         for pos in posInfectedlist:
-            emission = self.emissionRate * 1/self.distanceMatrix
+            # 2m is 4 * resolution tiles
+            # The emission is 1 exactly at the agent and decreases linearly. It reaches 0 at 2 meters and is 0 after
+            # that.
+            # f(x) = min(1 - (x / 2m), 0)
+            emission = self.emissionRate * np.max(1.0 - self.distanceMatrix / 2, 0)
             
             xPos = pos[0]
             yPos = pos[1]

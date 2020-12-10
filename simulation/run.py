@@ -82,7 +82,7 @@ def main(do_data_analysis=False, resolution=3):
     else:
         visibilityMatrix = getVisibilityMaps(environment, resolution, screen=False)
         np.save(visibility_map_path, visibilityMatrix)
-    distanceMatrix = getDistances(visibilityMatrix, environment)
+    distanceMatrix = getDistances(visibilityMatrix, environment, resolution)
     cones = getDirectedSpread(visibilityMatrix, environment, resolution)
 
     particle_map = np.zeros((width, height))

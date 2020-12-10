@@ -3,10 +3,8 @@ from itertools import product
 import numpy as np
 from numpy.linalg import norm
 
-from simulation.loader import TileType
 
-
-def getDistances(visibility_matrix: np.ndarray, environment: np.ndarray) -> np.ndarray:
+def getDistances(visibility_matrix: np.ndarray, environment: np.ndarray, resolution: int) -> np.ndarray:
     """
     Parameters
     ----------
@@ -14,6 +12,7 @@ def getDistances(visibility_matrix: np.ndarray, environment: np.ndarray) -> np.n
         Holds all visibility maps corresponding to each positions in the environment
     environment
         Used for finding non zero element when initializing distanceMatrix
+    resolution : int
 
     Returns
     -------
@@ -44,12 +43,11 @@ def getDistances(visibility_matrix: np.ndarray, environment: np.ndarray) -> np.n
     local_mid = (local_width // 2, local_height // 2)
 
     for local_pos in product(range(local_width), range(local_height)):
-        if local_pos == local_mid:
-            distances[local_pos] = 0.5
-        else:
-            distances[local_pos] = norm(np.array(local_pos) - np.array(local_mid))
+        # Distance in meters
+        distances[local_pos] = norm(np.array(local_pos) - np.array(local_mid)) / (2 * resolution)
 
     return distances
+
 
 def getDirectedSpread(visibility_matrix: np.ndarray, environment: np.ndarray, resolution: int) -> np.ndarray:
     """
