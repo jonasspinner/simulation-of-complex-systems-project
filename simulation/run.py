@@ -16,7 +16,16 @@ from visibility import getVisibilityMaps
 from data_analysis import data_analysis, sum_of_list_in_list
 
 
-def main(save_file_to_disk=True, animate = True, do_data_analys = True, resolution=1):
+def main(do_data_analys = False, resolution=1):
+
+    setting = 5
+    #1 = Do animation and plot live
+    #2 = Do animation and save to file (no live plot)
+    #3 = Do one run without animation
+    #4 = Do multiple run with different infection rates
+    #5 = Do multiple run with different max amount of people
+
+    max_ratio_agents = 1 # 1=100%, 0.5=50%
 
     sitting_min_time = 15*60*resolution
     sitting_max_time = 45*60*resolution
@@ -48,14 +57,16 @@ def main(save_file_to_disk=True, animate = True, do_data_analys = True, resoluti
 
     time_spent_in_restaurant_list = []
 
-    # Create path to food place from entrance
-    path_to_food = find_path(graph, entry_position, food_position)
-
     # Create agents walk path. This is to avoid calculating the path each iteration.
     for seat_position in seats:
+        path_to_food = find_path(graph, entry_position, food_position)
         path_to_seat = find_path(graph, food_position, seat_position)
         path_to_exit = find_path(graph, seat_position, entry_position)
         agents.append(Agent(path_in=path_to_food + path_to_seat, path_out=path_to_exit))
+
+    total_number_of_seats = len(agents)
+
+    max_number_agents = int(max_ratio_agents*total_number_of_seats)
 
     # Plot code
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
@@ -99,26 +110,32 @@ def main(save_file_to_disk=True, animate = True, do_data_analys = True, resoluti
         ax1.add_patch(circle)
 
     def update_agents(_frame):
-
         #print(_frame)
 
         particle_map = infection_spread.particleMatrix
+
+        current_number_agents_in_resturant = 0
+        for agent in agents:
+            if agent.state != AgentState.OUTSIDE:
+                current_number_agents_in_resturant += 1
 
         infected_pos_list = []
 
         for agent, circle in zip(agents, circles):
             if agent.state == AgentState.OUTSIDE and np.random.random() < avarage_time_steps_between_entering / len(agents):
-                agent.state = AgentState.ARRIVING
-                agent.time_spent_eating = random.randint(sitting_min_time, sitting_max_time)
+                if current_number_agents_in_resturant <= max_number_agents:
 
-                if agents.index(agent) == 0:
-                    circle.set_ec('b')
-                    circle.set_fc('b')
-                
-                if np.random.random() < chance_of_being_infected:
-                    agent.infected = True
-                    circle.set_ec('r')
-                    circle.set_fc('k')
+                    agent.state = AgentState.ARRIVING
+                    agent.time_spent_eating = random.randint(sitting_min_time, sitting_max_time)
+
+                    if agents.index(agent) == 0:
+                        circle.set_ec('b')
+                        circle.set_fc('b')
+                    
+                    if np.random.random() < chance_of_being_infected:
+                        agent.infected = True
+                        circle.set_ec('r')
+                        circle.set_fc('k')
 
             if agent.state != AgentState.OUTSIDE:
 
@@ -178,47 +195,76 @@ def main(save_file_to_disk=True, animate = True, do_data_analys = True, resoluti
 
         return circles, particle_overlay, ax2, ax3
 
-    if not animate:
-        if True: # Test different infection rates on same map
-            chance_of_being_infected = 0.00
-            print("# chance_of_being_infected; ","risk_density_arriving_list_sum; ", "risk_density_sitting_list_sum; ", "risk_density_leaving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_leaving_list_sum")
-            for p in range(20):
+    if setting == 1:
+        animation = FuncAnimation(fig, update_agents, interval=10)
+        plt.show()
 
-                chance_of_being_infected += 0.01
+    elif setting == 2:
+        animation = FuncAnimation(fig, update_agents, interval=1, frames=500, repeat=False)
+        animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
 
-                accumulated_risk_list = []
-                risk_list_of_list = []
-                risk_density_arriving_list = []
-                risk_density_sitting_list = []
-                risk_density_leaving_list = []
+    elif setting == 3:
+        for i in range(10000):
+            update_agents(i)
 
-                risk_density_arriving_list_sum = []
-                risk_density_sitting_list_sum = []
-                risk_density_leaving_list_sum = []
+    elif setting == 4:
+        chance_of_being_infected = 0.00
+        print("# chance_of_being_infected; ","risk_density_arriving_list_sum; ", "risk_density_sitting_list_sum; ", "risk_density_leaving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_leaving_list_sum")
+        for p in range(20):
 
-                for agent in agents:
-                    agent.reset()
+            chance_of_being_infected += 0.01
+
+            accumulated_risk_list = []
+            risk_list_of_list = []
+            risk_density_arriving_list = []
+            risk_density_sitting_list = []
+            risk_density_leaving_list = []
+
+            risk_density_arriving_list_sum = []
+            risk_density_sitting_list_sum = []
+            risk_density_leaving_list_sum = []
+
+            for agent in agents:
+                agent.reset()
                     
-                for i in range(10000):
-                    update_agents(i)
-
-                risk_density_arriving_list_sum = sum_of_list_in_list(risk_density_arriving_list.copy())
-                risk_density_sitting_list_sum = sum_of_list_in_list(risk_density_sitting_list.copy())
-                risk_density_leaving_list_sum = sum_of_list_in_list(risk_density_leaving_list.copy())
-
-                print(round(chance_of_being_infected, 2),";",round(statistics.median(risk_density_arriving_list_sum), 2),";", round(statistics.median(risk_density_sitting_list_sum), 2),";", round(statistics.median(risk_density_leaving_list_sum), 2),";", round(statistics.mean(risk_density_arriving_list_sum), 2),";", round(statistics.mean(risk_density_sitting_list_sum), 2),";", round(statistics.mean(risk_density_leaving_list_sum), 2))
-        else: # Test one infection rate (good if using do_data_analys)
             for i in range(10000):
                 update_agents(i)
 
+            risk_density_arriving_list_sum = sum_of_list_in_list(risk_density_arriving_list.copy())
+            risk_density_sitting_list_sum = sum_of_list_in_list(risk_density_sitting_list.copy())
+            risk_density_leaving_list_sum = sum_of_list_in_list(risk_density_leaving_list.copy())
 
-    elif save_file_to_disk:
-        animation = FuncAnimation(fig, update_agents, interval=1, frames=500, repeat=False)
-        animation.save(str(output_video_path), fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
-    else:
-        animation = FuncAnimation(fig, update_agents, interval=10)
-        plt.show()
-    
+            print(round(chance_of_being_infected, 2),";",round(statistics.median(risk_density_arriving_list_sum), 2),";", round(statistics.median(risk_density_sitting_list_sum), 2),";", round(statistics.median(risk_density_leaving_list_sum), 2),";", round(statistics.mean(risk_density_arriving_list_sum), 2),";", round(statistics.mean(risk_density_sitting_list_sum), 2),";", round(statistics.mean(risk_density_leaving_list_sum), 2))
+
+    elif setting == 5:
+        max_number_agents = 50
+        print("# max_number_agents; " , "total_number_of_seats; ","risk_density_arriving_list_sum; ", "risk_density_sitting_list_sum; ", "risk_density_leaving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_leaving_list_sum")
+        while max_number_agents <= total_number_of_seats:
+
+            accumulated_risk_list = []
+            risk_list_of_list = []
+            risk_density_arriving_list = []
+            risk_density_sitting_list = []
+            risk_density_leaving_list = []
+
+            risk_density_arriving_list_sum = []
+            risk_density_sitting_list_sum = []
+            risk_density_leaving_list_sum = []
+
+            for agent in agents:
+                agent.reset()
+                        
+            for i in range(10000):
+                update_agents(i)
+
+            risk_density_arriving_list_sum = sum_of_list_in_list(risk_density_arriving_list.copy())
+            risk_density_sitting_list_sum = sum_of_list_in_list(risk_density_sitting_list.copy())
+            risk_density_leaving_list_sum = sum_of_list_in_list(risk_density_leaving_list.copy())
+
+            print(round(max_number_agents, 2),";",round(total_number_of_seats, 2),";",round(statistics.median(risk_density_arriving_list_sum), 2),";", round(statistics.median(risk_density_sitting_list_sum), 2),";", round(statistics.median(risk_density_leaving_list_sum), 2),";", round(statistics.mean(risk_density_arriving_list_sum), 2),";", round(statistics.mean(risk_density_sitting_list_sum), 2),";", round(statistics.mean(risk_density_leaving_list_sum), 2))
+
+            max_number_agents += 50
+
     plt.close()
 
     if do_data_analys:
