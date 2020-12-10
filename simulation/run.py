@@ -16,8 +16,8 @@ from simulation.visibility import getVisibilityMaps
 from simulation.visualizations import building_cmap, density_cmap
 
 
-def main(do_data_analysis=False, resolution=1):
-    setting = 2
+def main(do_data_analysis=False, resolution=3):
+    setting = 5
     # 1 = Do animation and plot live
     # 2 = Do animation and save to file (no live plot)
     # 3 = Do one run without animation
@@ -25,6 +25,7 @@ def main(do_data_analysis=False, resolution=1):
     # 5 = Do multiple run with different max amount of people
 
     max_ratio_agents = 1  # 1=100%, 0.5=50%
+    iterations_multiple_run = 10000
 
     sitting_min_time = 15 * 60 * resolution
     sitting_max_time = 45 * 60 * resolution
@@ -210,9 +211,9 @@ def main(do_data_analysis=False, resolution=1):
 
     elif setting == 4:
         chance_of_being_infected = 0.00
-        print("# chance_of_being_infected; ", "risk_density_arriving_list_sum; ", "risk_density_sitting_list_sum; ",
-              "risk_density_leaving_list_sum; ", "risk_density_arriving_list_sum; ", "risk_density_arriving_list_sum; ",
-              "risk_density_leaving_list_sum")
+        print("# chance_of_being_infected; ",  "median risk density arriving; ",
+              "median risk density sitting; ", "median risk density leaving ", "mean risk density arriving; ",
+              "mean risk density arriving; ", "mean risk density leaving")
         for p in range(20):
 
             chance_of_being_infected += 0.01
@@ -230,7 +231,7 @@ def main(do_data_analysis=False, resolution=1):
             for agent in agents:
                 agent.reset()
 
-            for i in range(10000):
+            for i in range(iterations_multiple_run):
                 update_agents(i)
 
             risk_density_arriving_list_sum = sum_of_list_in_list(risk_density_arriving_list.copy())
@@ -246,9 +247,12 @@ def main(do_data_analysis=False, resolution=1):
 
     elif setting == 5:
         max_number_agents = 50
-        print("# max_number_agents; ", "total_number_of_seats; ", "risk_density_arriving_list_sum; ",
-              "risk_density_sitting_list_sum; ", "risk_density_leaving_list_sum; ", "risk_density_arriving_list_sum; ",
-              "risk_density_arriving_list_sum; ", "risk_density_leaving_list_sum")
+        print("# iterations_multiple_run:", iterations_multiple_run, "  chance_of_being_infected:", 
+                chance_of_being_infected, "  resolution:", resolution)
+
+        print("# max_number_agents; ", "total number of seats; ", "median risk density arriving; ",
+              "median risk density sitting; ", "median risk density leaving ", "mean risk density arriving; ",
+              "mean risk density arriving; ", "mean risk density leaving")
         while max_number_agents <= total_number_of_seats:
 
             accumulated_risk_list = []
@@ -264,7 +268,7 @@ def main(do_data_analysis=False, resolution=1):
             for agent in agents:
                 agent.reset()
 
-            for i in range(10000):
+            for i in range(iterations_multiple_run):
                 update_agents(i)
 
             risk_density_arriving_list_sum = sum_of_list_in_list(risk_density_arriving_list.copy())
