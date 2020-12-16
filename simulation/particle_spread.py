@@ -53,7 +53,8 @@ class particle_spread:
             # The emission is 1 exactly at the agent and decreases linearly. It reaches 0 at 2 meters and is 0 after
             # that.
             # f(x) = min(1 - (x / 2m), 0)
-            emission = self.emissionRate * np.max(1.0 - self.distanceMatrix / 2, 0)
+            emission = self.emissionRate * (1.0 - self.distanceMatrix / 2)
+            emission[emission <= 0] = 0
             
             xPos = pos[0]
             yPos = pos[1]
