@@ -1,0 +1,2 @@
+# d:\OneDrive\Doku\Studier\Chalmers\MPCAS\P2 FFR120  Simulation of complex systems\Project\Repo\simulation-of-complex-systems-project\data\chalmers_karresturang_no_table.txt							
+# iterations_multiple_run: 1000000   chance_of_being_infected: 0.02   resolution: 3							
