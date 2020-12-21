@@ -4,32 +4,32 @@ X               ...................   X
 X               .                .X   X
 X               .                .X   X
 XC  C  C  C  C  .  C  C  C  C  C .X   X
-X               .                .X   X
-X               .                .X   X
-XC  C  C  C  C  .  C  C  C  C  C .X   X
-X               .                .X   X
+XT  T  T  T  T  .  T  T  T  T  T .X   X
 X               .                .X   X
 XC  C  C  C  C  .  C  C  C  C  C .X   X
-X               .                .X   X
-X               .                .X   X
-XC  C  C  C  C  .  C  C  C  C  C .X   X
-X               .                .X   X
+XT  T  T  T  T  .  T  T  T  T  T .X   X
 X               .                .X   X
 XC  C  C  C  C  .  C  C  C  C  C .X   X
-X               .                .X   X
-X               .                .X   X
-XC  C  C  C  C  .  C  C  C  C  C .X   X
-X               .                .X   X
+XT  T  T  T  T  .  T  T  T  T  T .X   X
 X               .                .X   X
 XC  C  C  C  C  .  C  C  C  C  C .X   X
-X               .                .XAAAX
+XT  T  T  T  T  .  T  T  T  T  T .X   X
+X               .                .X   X
+XC  C  C  C  C  .  C  C  C  C  C .X   X
+XT  T  T  T  T  .  T  T  T  T  T .X   X
+X               .                .X   X
+XC  C  C  C  C  .  C  C  C  C  C .X   X
+XT  T  T  T  T  .  T  T  T  T  T .X   X
+X               .                .X   X
+XC  C  C  C  C  .  C  C  C  C  C .X   X
+XT  T  T  T  T  .  T  T  T  T  T .XAAAX
 X.................................>   E
-X               .                .>   E
+XT  T  T  T  T  .  T  T  T  T  T .>   E
 XC  C  C  C  C  .  C  C  C  C  C .XXXXX
 X               .                .XXXXX
-X               .                .XXXXX
+XT  T  T  T  T  .  T  T  T  T  T .XXXXX
 XC  C  C  C  C  .  C  C  C  C  C .XXXXX
 X               .                .XXXXX
-X                                 XXXXX
+XT  T  T  T  T  T  T  T  T  T  T  XXXXX
 XC  C  C  C  C  C  C  C  C  C  C  XXXXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

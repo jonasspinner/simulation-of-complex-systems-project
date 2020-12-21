@@ -1,8 +1,33 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import statistics
+from pathlib import Path
+
+import csv
 
 def data_analysis(accumulated_risk_list, risk_density_full_list, risk_density_arriving_list, risk_density_sitting_list, risk_density_leaving_list):
+
+    accumulated_risk_list_path = Path(__file__).parent.parent / "simulation_results" / "accumulated_risk_list.csv"
+    risk_density_full_list_path = Path(__file__).parent.parent / "simulation_results" / "risk_density_full_list.csv"
+    risk_density_arriving_list_path = Path(__file__).parent.parent / "simulation_results" / "risk_density_arriving_list.csv"
+    risk_density_sitting_list_path = Path(__file__).parent.parent / "simulation_results" / "risk_density_sitting_list.csv"
+    risk_density_leaving_list_path = Path(__file__).parent.parent / "simulation_results" / "risk_density_leaving_list.csv"
+
+    with open(risk_density_full_list_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(risk_density_full_list)
+
+    with open(risk_density_arriving_list_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(risk_density_arriving_list)
+
+    with open(risk_density_sitting_list_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(risk_density_sitting_list)
+
+    with open(risk_density_leaving_list_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(risk_density_leaving_list)
 
 
     fig, axes = plt.subplots(nrows=2, ncols=1)
@@ -14,6 +39,11 @@ def data_analysis(accumulated_risk_list, risk_density_full_list, risk_density_ar
     ax0.set_title("Accumulated risk during restaurant visit")
     ax0.set_xlabel("Agent listed from best to worst")
     ax0.set_ylabel("Accumulated risk")
+
+    with open(accumulated_risk_list_path,'w') as f:
+        for row in accumulated_risk_list:
+            f.write(str(round(row, 0)) + ';')
+            f.write('\n')
 
     rank = np.linspace(1,0,len(accumulated_risk_list))
 
